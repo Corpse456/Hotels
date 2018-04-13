@@ -47,7 +47,7 @@ public class HotelUI extends UI {
                 deleteHotel.setEnabled(true);
                 form.setHotel(e.getValue());
             }
-            if (e.getValue() == null) {
+            if (e.getValue() == null && deleteHotel.isEnabled()) {
                 deleteHotel.setEnabled(false);
                 form.setVisible(false);
             }
@@ -65,6 +65,7 @@ public class HotelUI extends UI {
             service.delete(delCandidate);
             deleteHotel.setEnabled(false);
             updateList();
+            form.setVisible(false);
         });
         
         HorizontalLayout controls = new HorizontalLayout();

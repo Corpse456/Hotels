@@ -139,6 +139,7 @@ public class HotelService {
                 String[] split = hotel.split(";");
                 Hotel h = new Hotel();
                 h.setName(split[0]);
+                h.setDescription("Empty");
                 h.setRating(split[1]);
                 h.setUrl(split[2]);
                 h.setAddress(split[3]);
