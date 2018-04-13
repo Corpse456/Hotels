@@ -27,9 +27,12 @@ public class HotelEditForm extends FormLayout {
     
     public HotelEditForm(HotelUI ui) {
         this.ui = ui;
+        this.setVisible(false);
         
         save.addClickListener(e -> save());
         save.addClickListener(e -> setVisible(false));
+        
+        category.setItems(HotelCategory.values());
         
         HorizontalLayout buttons = new HorizontalLayout();
         buttons.addComponents(save, close);

@@ -34,15 +34,24 @@ public class HotelUI extends UI {
     private final Grid<Hotel> grid = new Grid<>(Hotel.class);
     private final TextField filter = new TextField();
     private final Button addHotel = new Button("Add hotel");
+    private final Button deleteHotel = new Button("Delete hotel");
     private final HotelEditForm form = new HotelEditForm(this);
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
-        grid.setItems(service.findAll());
         grid.setColumnOrder("name", "address", "rating", "category");
-
-        grid.setWidth(100, Unit.PERCENTAGE);
+        grid.setWidth(1500, Unit.PIXELS);
         grid.setHeight(850, Unit.PIXELS);
+        grid.asSingleSelect().addValueChangeListener(e -> {
+            if (e.getValue() != null) {
+                deleteHotel.setEnabled(true);
+                form.setHotel(e.getValue());
+            }
+            if (e.getValue() == null) {
+                deleteHotel.setEnabled(false);
+                form.setVisible(false);
+            }
+        });
 
         filter.addValueChangeListener(e -> updateList());
         filter.setValueChangeMode(ValueChangeMode.LAZY);
@@ -50,11 +59,21 @@ public class HotelUI extends UI {
 
         addHotel.addClickListener(e -> form.setHotel(new Hotel()));
         
+        deleteHotel.setEnabled(false);
+        deleteHotel.addClickListener(e -> {
+            Hotel delCandidate = grid.getSelectedItems().iterator().next(); 
+            service.delete(delCandidate);
+            deleteHotel.setEnabled(false);
+            updateList();
+        });
+        
         HorizontalLayout controls = new HorizontalLayout();
-        controls.addComponents(filter, addHotel);
+        controls.addComponents(filter, addHotel, deleteHotel);
         
+        HorizontalLayout content = new HorizontalLayout();
+        content.addComponents(grid, form);
         
-        layout.addComponents(controls, grid);
+        layout.addComponents(controls, content);
         setContent(layout);
     }
 
