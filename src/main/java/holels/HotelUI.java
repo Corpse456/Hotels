@@ -9,7 +9,9 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.ui.ValueChangeMode;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -31,6 +33,8 @@ public class HotelUI extends UI {
     private final HotelService service = HotelService.getInstance();
     private final Grid<Hotel> grid = new Grid<>(Hotel.class);
     private final TextField filter = new TextField();
+    private final Button addHotel = new Button("Add hotel");
+    private final HotelEditForm form = new HotelEditForm(this);
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -44,11 +48,17 @@ public class HotelUI extends UI {
         filter.setValueChangeMode(ValueChangeMode.LAZY);
         updateList();
 
-        layout.addComponents(filter, grid);
+        addHotel.addClickListener(e -> form.setHotel(new Hotel()));
+        
+        HorizontalLayout controls = new HorizontalLayout();
+        controls.addComponents(filter, addHotel);
+        
+        
+        layout.addComponents(controls, grid);
         setContent(layout);
     }
 
-    private int updateList() {
+    public int updateList() {
         List<Hotel> hotelList = service.findAll(filter.getValue());
         grid.setItems(hotelList);
         return 0;
