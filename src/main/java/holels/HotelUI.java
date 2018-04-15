@@ -11,10 +11,12 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.renderers.HtmlRenderer;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser
@@ -32,7 +34,8 @@ public class HotelUI extends UI {
     private final VerticalLayout layout = new VerticalLayout();
     private final HotelService service = HotelService.getInstance();
     private final Grid<Hotel> grid = new Grid<>(Hotel.class);
-    private final TextField filter = new TextField();
+    private final TextField nameFilter = new TextField();
+    private final TextField addressFilter = new TextField();
     private final Button addHotel = new Button("Add hotel");
     private final Button deleteHotel = new Button("Delete hotel");
     private final HotelEditForm form = new HotelEditForm(this);
@@ -40,10 +43,11 @@ public class HotelUI extends UI {
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         grid.setColumnOrder("name", "address", "rating", "category");
-        grid.setWidth(1500, Unit.PIXELS);
-        grid.setHeight(850, Unit.PIXELS);
+        /*grid.setWidth(1500, Unit.PIXELS);
+        grid.setHeight(850, Unit.PIXELS);*/
         grid.asSingleSelect().addValueChangeListener(e -> {
             if (e.getValue() != null) {
+        	System.out.println(e.getValue());
                 deleteHotel.setEnabled(true);
                 form.setHotel(e.getValue());
             }
@@ -53,9 +57,13 @@ public class HotelUI extends UI {
             }
         });
 
-        filter.addValueChangeListener(e -> updateList());
-        filter.setValueChangeMode(ValueChangeMode.LAZY);
-        updateList();
+        nameFilter.setPlaceholder("Name Filter");
+        nameFilter.addValueChangeListener(e -> updateList());
+        nameFilter.setValueChangeMode(ValueChangeMode.LAZY);
+        
+        addressFilter.setPlaceholder("Address filter");
+        addressFilter.addValueChangeListener(e -> updateList());
+        addressFilter.setValueChangeMode(ValueChangeMode.LAZY);
 
         addHotel.addClickListener(e -> form.setHotel(new Hotel()));
         
@@ -68,18 +76,25 @@ public class HotelUI extends UI {
             form.setVisible(false);
         });
         
+        grid.setColumns("name", "address", "rating", "category", "operatesFrom", "description");
+        Column<Hotel, String> htmlColumn = grid.addColumn(hotel ->
+        "<a href='" + hotel.getUrl() + "' target='_top'>" + hotel.getUrl() + "</a>",
+        new HtmlRenderer());
+        htmlColumn.setCaption("URL");
+        
         HorizontalLayout controls = new HorizontalLayout();
-        controls.addComponents(filter, addHotel, deleteHotel);
+        controls.addComponents(nameFilter, addressFilter, addHotel, deleteHotel);
         
         HorizontalLayout content = new HorizontalLayout();
         content.addComponents(grid, form);
         
         layout.addComponents(controls, content);
         setContent(layout);
+        updateList();
     }
 
     public int updateList() {
-        List<Hotel> hotelList = service.findAll(filter.getValue());
+        List<Hotel> hotelList = service.findAll(nameFilter.getValue(), addressFilter.getValue());
         grid.setItems(hotelList);
         return 0;
     }
