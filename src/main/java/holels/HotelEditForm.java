@@ -54,8 +54,12 @@ public class HotelEditForm extends FormLayout {
         return hotel;
     }
 
-    public void setHotel(Hotel hotel) {
-        this.hotel = hotel;
+    public synchronized void setHotel(Hotel hotel) {
+        try {
+	    this.hotel = hotel.clone();
+	} catch (CloneNotSupportedException e) {
+	    e.printStackTrace();
+	}
         binder.setBean(this.hotel);
         setVisible(true);
     }
