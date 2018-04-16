@@ -47,7 +47,6 @@ public class HotelUI extends UI {
         grid.setHeight(850, Unit.PIXELS);*/
         grid.asSingleSelect().addValueChangeListener(e -> {
             if (e.getValue() != null) {
-        	System.out.println(e.getValue());
                 deleteHotel.setEnabled(true);
                 form.setHotel(e.getValue());
             }
@@ -77,8 +76,7 @@ public class HotelUI extends UI {
         });
         
         grid.setColumns("name", "address", "rating", "category", "operatesFrom", "description");
-        Column<Hotel, String> htmlColumn = grid.addColumn(hotel ->
-        "<a href='" + hotel.getUrl() + "' target='_top'>" + hotel.getUrl() + "</a>",
+        Column<Hotel, String> htmlColumn = grid.addColumn(hotel -> urlAsHtmlLink(hotel.getUrl()),
         new HtmlRenderer());
         htmlColumn.setCaption("URL");
         
@@ -87,10 +85,19 @@ public class HotelUI extends UI {
         
         HorizontalLayout content = new HorizontalLayout();
         content.addComponents(grid, form);
+        grid.setWidth(100, Unit.PERCENTAGE);
+        grid.setHeight(600, Unit.PIXELS);
+        content.setWidth(100, Unit.PERCENTAGE);
         
         layout.addComponents(controls, content);
         setContent(layout);
         updateList();
+    }
+    
+    private String urlAsHtmlLink(String url) {
+	int beginIndex = url.indexOf("//") + "//".length();
+	String shortUrl = url.substring(beginIndex, url.indexOf("/", beginIndex));
+        return "<a class=\"v-link\" href=\"" + url + "\">" + shortUrl + "</a>";
     }
 
     public int updateList() {
