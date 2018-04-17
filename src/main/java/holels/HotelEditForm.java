@@ -6,6 +6,7 @@ import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
 public class HotelEditForm extends FormLayout {
@@ -19,7 +20,7 @@ public class HotelEditForm extends FormLayout {
     private TextField address = new TextField("Address");
     private TextField rating = new TextField("Rating");
     private DateField operatesFrom = new DateField("Date");
-    private TextField description = new TextField("Description");
+    private TextArea description = new TextArea("Description");
     private NativeSelect<HotelCategory> category = new NativeSelect<>("Category");
     private TextField url = new TextField("URL");
     
@@ -40,7 +41,7 @@ public class HotelEditForm extends FormLayout {
         HorizontalLayout buttons = new HorizontalLayout();
         buttons.addComponents(save, close);
         
-        addComponents(name, address, rating, operatesFrom, description, category, url, buttons);
+        addComponents(name, address, rating, operatesFrom, category, url, description, buttons);
         binder.bindInstanceFields(this);
     }
 
