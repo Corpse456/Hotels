@@ -13,6 +13,8 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -92,6 +94,8 @@ public class HotelUI extends UI {
         layout.addComponents(controls, content);
         setContent(layout);
         updateList();
+        
+        Notification.show("Welcome to our website", Type.TRAY_NOTIFICATION);
     }
     
     private String urlAsHtmlLink(String url) {
