@@ -101,7 +101,7 @@ public class HotelUI extends UI {
     private String urlAsHtmlLink(String url) {
 	int beginIndex = url.indexOf("//") + "//".length();
 	String shortUrl = url.substring(beginIndex, url.indexOf("/", beginIndex));
-        return "<a class=\"v-link\" href=\"" + url + "\">" + shortUrl + "</a>";
+        return "<a href=\"" + url + "\" target=\"_blank\">" + shortUrl + "</a>";
     }
 
     public int updateList() {
