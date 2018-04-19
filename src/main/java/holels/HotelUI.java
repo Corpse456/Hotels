@@ -10,9 +10,12 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.MenuBar;
+import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
@@ -40,7 +43,10 @@ public class HotelUI extends UI {
     private final TextField addressFilter = new TextField();
     private final Button addHotel = new Button("Add hotel");
     private final Button deleteHotel = new Button("Delete hotel");
+    private final Button editHotel = new Button("Edit hotel");
+    private final Button editCategory = new Button("Edit category");
     private final HotelEditForm form = new HotelEditForm(this);
+    private final MenuBar menu = new MenuBar();
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -58,11 +64,11 @@ public class HotelUI extends UI {
             }
         });
 
-        nameFilter.setPlaceholder("Name Filter");
+        nameFilter.setPlaceholder("filter by name");
         nameFilter.addValueChangeListener(e -> updateList());
         nameFilter.setValueChangeMode(ValueChangeMode.LAZY);
         
-        addressFilter.setPlaceholder("Address filter");
+        addressFilter.setPlaceholder("filter by name");
         addressFilter.addValueChangeListener(e -> updateList());
         addressFilter.setValueChangeMode(ValueChangeMode.LAZY);
 
@@ -83,8 +89,7 @@ public class HotelUI extends UI {
         htmlColumn.setCaption("URL");
         
         HorizontalLayout controls = new HorizontalLayout();
-        controls.addComponents(nameFilter, addressFilter, addHotel, deleteHotel);
-        
+        controls.addComponents(nameFilter, addressFilter, addHotel, deleteHotel, editHotel, editCategory);        
         HorizontalLayout content = new HorizontalLayout();
         content.addComponents(grid, form);
         grid.setWidth(100, Unit.PERCENTAGE);
@@ -96,6 +101,16 @@ public class HotelUI extends UI {
         updateList();
         
         Notification.show("Welcome to our website", Type.TRAY_NOTIFICATION);
+    }
+    
+    private void menuCreating () {
+        new MenuBar.Command() {
+            @Override
+            public void menuSelected (MenuItem selectedItem) {
+                
+            }
+        };
+
     }
     
     private String urlAsHtmlLink(String url) {
