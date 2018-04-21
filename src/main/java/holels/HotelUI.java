@@ -1,24 +1,23 @@
 package holels;
 
 import java.time.LocalDate;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.annotation.WebServlet;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.data.Binder;
-import com.vaadin.data.Binder.Binding;
-import com.vaadin.data.HasValue.ValueChangeListener;
+import com.vaadin.event.selection.MultiSelectionListener;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.server.AbstractErrorMessage.ContentMode;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.Grid.Column;
+import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
@@ -72,7 +71,7 @@ public class HotelUI extends UI {
         addHotel.addClickListener(e -> form.setHotel(new Hotel()));
         
         deleteSetUp();
-        
+        editSetUp();
         controls.addComponents(nameFilter, addressFilter, addHotel, deleteHotel, editHotel, editCategory);
         
         contentSetUp();
@@ -86,6 +85,14 @@ public class HotelUI extends UI {
         Notification.show("Welcome to our website", Type.TRAY_NOTIFICATION);
     }
 
+    private void editSetUp () {
+        editHotel.setEnabled(false);
+        editHotel.addClickListener(e -> {
+            Hotel editCandidate = grid.getSelectedItems().iterator().next();
+            form.setHotel(editCandidate);
+        });
+    }
+
     private void contentSetUp () {
         content.addComponents(grid, form);
         content.setWidth(100, Unit.PERCENTAGE);
@@ -97,17 +104,25 @@ public class HotelUI extends UI {
     private void deleteSetUp () {
         deleteHotel.setEnabled(false);
         deleteHotel.addClickListener(e -> {
-            Hotel delCandidate = grid.getSelectedItems().iterator().next(); 
-            Notification.show("Hotel " + delCandidate.getName() + " deleted", Type.TRAY_NOTIFICATION);
-            service.delete(delCandidate);
+            Iterator<Hotel> delCandidates = grid.getSelectedItems().iterator();
+            while (delCandidates.hasNext()) {
+                Hotel delCandidate = delCandidates.next();
+                notification(grid.getSelectedItems(), delCandidate);
+                service.delete(delCandidate);
+            }
             deleteHotel.setEnabled(false);
             updateList();
-            form.setVisible(false);
         });
     }
 
+    private void notification (Set<Hotel> set, Hotel delCandidate) {
+        if (set.size() > 1) Notification.show(set.size() + " hotels deleted", Type.TRAY_NOTIFICATION);
+        else Notification.show("Hotel " + delCandidate.getName() + " deleted", Type.TRAY_NOTIFICATION);
+    }
+
     private void gridSetUp () {
-        grid.asSingleSelect().addValueChangeListener(listener());
+        grid.setSelectionMode(SelectionMode.MULTI);
+        grid.asMultiSelect().addSelectionListener(listener());
         grid.setWidth(100, Unit.PERCENTAGE);
         grid.setHeight(700, Unit.PIXELS);
         gridAddColumns();
@@ -123,15 +138,21 @@ public class HotelUI extends UI {
         grid.addColumn(hotel -> "<a href=\"" + hotel.getUrl() + "\" target=\"_blank\">hotel info</a>", new HtmlRenderer()).setCaption("URL");
     }
 
-    private ValueChangeListener<Hotel> listener () {
+    private MultiSelectionListener<Hotel> listener () {
         return e -> {
-            if (e.getValue() != null) {
-                deleteHotel.setEnabled(true);
-                form.setHotel(e.getValue());
-            }
-            if (e.getValue() == null && deleteHotel.isEnabled()) {
+            Set<Hotel> value = e.getValue();
+            
+            if (value.size() == 0) {
                 deleteHotel.setEnabled(false);
-                form.setVisible(false);
+                editHotel.setEnabled(false);
+            }
+            if (value.size() == 1) {
+                editHotel.setEnabled(true);
+                deleteHotel.setEnabled(true);
+            }
+            if (value.size() > 1) {
+                editHotel.setEnabled(false);
+                deleteHotel.setEnabled(true);
             }
         };
     }

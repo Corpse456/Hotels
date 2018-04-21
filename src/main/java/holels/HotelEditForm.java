@@ -1,14 +1,7 @@
 package holels;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDate;
-import java.time.chrono.ChronoPeriod;
-import java.time.chrono.Chronology;
 import java.time.temporal.ChronoField;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalField;
-import java.time.temporal.TemporalUnit;
 
 import com.vaadin.data.Binder;
 import com.vaadin.data.Converter;
@@ -17,7 +10,6 @@ import com.vaadin.data.ValidationException;
 import com.vaadin.data.ValidationResult;
 import com.vaadin.data.Validator;
 import com.vaadin.data.ValueContext;
-import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
@@ -122,7 +114,7 @@ public class HotelEditForm extends FormLayout {
 
             @Override
             public Result<Long> convertToModel (LocalDate value, ValueContext context) {
-                if (!value.isBefore(LocalDate.now())) Result.error("Wrong date. Should be until the current moment");;
+                if (!value.isBefore(LocalDate.now())) return Result.error("Wrong date. Should be until the current moment");;
                 return Result.ok(value.getLong(ChronoField.EPOCH_DAY));
             }
 
@@ -144,16 +136,6 @@ public class HotelEditForm extends FormLayout {
             }
         };
         return adressValidator;
-    }
-    
-    private Validator<LocalDate> dateValidator () {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    private Validator<String> ratingValidator () {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     private void close () {
