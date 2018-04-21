@@ -1,17 +1,32 @@
 package holels;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.ChronoPeriod;
+import java.time.chrono.Chronology;
+import java.time.temporal.ChronoField;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalUnit;
+
 import com.vaadin.data.Binder;
+import com.vaadin.data.Converter;
+import com.vaadin.data.Result;
 import com.vaadin.data.ValidationException;
 import com.vaadin.data.ValidationResult;
 import com.vaadin.data.Validator;
 import com.vaadin.data.ValueContext;
+import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Notification.Type;
 
 public class HotelEditForm extends FormLayout {
 
@@ -24,33 +39,32 @@ public class HotelEditForm extends FormLayout {
     private TextField address = new TextField("Address");
     private TextField rating = new TextField("Rating");
     private DateField operatesFrom = new DateField("Date");
-    private NativeSelect<HotelCategory> category = new NativeSelect<>("Category");
+    private NativeSelect<String> category = new NativeSelect<>("Category");
     private TextArea description = new TextArea("Description");
     private TextField url = new TextField("URL");
-    
+
     private Button save = new Button("Save");
     private Button close = new Button("Close");
     private HorizontalLayout buttons = new HorizontalLayout();
-    
-    public HotelEditForm(HotelUI ui) {
+
+    public HotelEditForm (HotelUI ui) {
         this.ui = ui;
         this.setVisible(false);
-        
+
         setSizes();
         preapareFied();
-        
+
         buttons.addComponents(save, close);
-        
+
         save.addClickListener(e -> save());
-        
         close.addClickListener(e -> close());
-        
-        category.setItems(HotelCategory.values());
-        
+
+        category.setItems(service.getCategory());
+
         addComponents(name, address, rating, operatesFrom, category, description, url, buttons);
         binder.bindInstanceFields(this);
     }
-    
+
     private void setSizes () {
         buttons.setWidth(100, Unit.PERCENTAGE);
         save.setWidth(100, Unit.PERCENTAGE);
@@ -65,22 +79,81 @@ public class HotelEditForm extends FormLayout {
     }
 
     private void preapareFied () {
-        Validator<String> adressValidator = new Validator<String>() {
+        String required = "Please enter a ";
+        binder.forField(name).asRequired(required + "name").bind(Hotel::getName, Hotel::setName);
+        binder.forField(address).asRequired(required + "address").withValidator(adressValidator()).bind(Hotel::getAddress, Hotel::setAddress);
+        binder.forField(rating).asRequired(required + "rating").withConverter(ratingConverter()).bind(Hotel::getRating, Hotel::setRating);
+        binder.forField(operatesFrom).asRequired(required + "opening date").withConverter(dateConverter()).bind(Hotel::getOperatesFrom, Hotel::setOperatesFrom);
+        binder.forField(category).asRequired(required + "category").bind(Hotel::getCategory, Hotel::setCategory);
+        binder.forField(description).bind(Hotel::getDescription, Hotel::setDescription);
+        binder.forField(url).asRequired(required + "url").bind(Hotel::getUrl, Hotel::setUrl);
+        
+        name.setDescription("Hotel name");
+        address.setDescription("Hotel address");
+    }
+
+    private Converter<String, Integer> ratingConverter () {
+        return new Converter<String, Integer>() {
+            private static final long serialVersionUID = 1561986299308364347L;
+
             @Override
-            public ValidationResult apply (String value, ValueContext context) {
-                if (value == null || value.isEmpty())
-                    return ValidationResult apply
-                return null;
+            public Result<Integer> convertToModel (String value, ValueContext context) {
+                int parseInt = -1;
+                try {
+                    parseInt = Integer.parseInt(value);
+                } catch (NumberFormatException e) {
+                    Result.error("Wrong number");
+                }
+                if (!(parseInt >= 0 && parseInt < 6)) return Result.error("value must be beetween 0 and 5 inclusive");
+                return Result.ok(parseInt);
+            }
+
+            @Override
+            public String convertToPresentation (Integer value, ValueContext context) {
+                if (value == null) return "";
+                return value + "";
             }
         };
-        binder.forField(name).asRequired("Please enter a name").bind(Hotel::getName, Hotel::setName);
-        name.setDescription("Hotel name");
-        binder.forField(address).bind(Hotel::getAddress, Hotel::setAddress);
-        binder.forField(rating).bind(Hotel::getRating, Hotel::setRating);
-        binder.forField(operatesFrom).bind(Hotel::getOperatesFrom, Hotel::setOperatesFrom);
-        binder.forField(category).bind(Hotel::getCategory, Hotel::setCategory);
-        binder.forField(description).bind(Hotel::getDescription, Hotel::setDescription);
-        binder.forField(url).bind(Hotel::getUrl, Hotel::setUrl);
+    }
+
+    private Converter<LocalDate, Long> dateConverter () {
+        return new Converter<LocalDate, Long>() {
+            private static final long serialVersionUID = 4373291445119905756L;
+
+            @Override
+            public Result<Long> convertToModel (LocalDate value, ValueContext context) {
+                if (!value.isBefore(LocalDate.now())) Result.error("Wrong date. Should be until the current moment");;
+                return Result.ok(value.getLong(ChronoField.EPOCH_DAY));
+            }
+
+            @Override
+            public LocalDate convertToPresentation (Long value, ValueContext context) {
+                if (value == null) return null;
+                return LocalDate.ofEpochDay(value);
+            }
+        };
+    }
+
+    private Validator<String> adressValidator () {
+        Validator<String> adressValidator = new Validator<String>() {
+            private static final long serialVersionUID = 1206246530385327587L;
+            @Override
+            public ValidationResult apply (String value, ValueContext context) {
+                if (value.length() < 5) return ValidationResult.error("The adress is too short");
+                return ValidationResult.ok();
+            }
+        };
+        return adressValidator;
+    }
+    
+    private Validator<LocalDate> dateValidator () {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    private Validator<String> ratingValidator () {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     private void close () {
@@ -88,29 +161,26 @@ public class HotelEditForm extends FormLayout {
         hotel = null;
     }
 
-    private void save() {
+    private void save () {
         if (binder.isValid()) {
             try {
                 binder.writeBean(hotel);
             } catch (ValidationException e) {
-                e.printStackTrace();
+                Notification.show("Unable to save! " + e.getMessage(), Type.ERROR_MESSAGE);
             }
             service.save(hotel);
             ui.updateList();
+            Notification.show("Hotel " + hotel.getName() + " saved", Type.TRAY_NOTIFICATION);
             close();
-        }
+        } else Notification.show("Unable to save! please review errors and fill in all the required fields", Type.ERROR_MESSAGE);
     }
 
-    public Hotel getHotel() {
+    public Hotel getHotel () {
         return hotel;
     }
 
-    public synchronized void setHotel(Hotel hotel) {
-        try {
-	    this.hotel = hotel.clone();
-	} catch (CloneNotSupportedException e) {
-	    e.printStackTrace();
-	}
+    public void setHotel (Hotel hotel) {
+        this.hotel = hotel;
         binder.readBean(this.hotel);
         setVisible(true);
     }

@@ -15052,3 +15052,7 @@ div.v-layout.v-horizontal.v-widget {
 	width: 19px;
 	overflow: hidden;
 }
+
+.mytheme .borderless .v-menubar-menuitem-highlight {
+	background: #ff0000;
+}

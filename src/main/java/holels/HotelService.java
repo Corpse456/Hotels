@@ -1,6 +1,7 @@
 package holels;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,7 +15,7 @@ public class HotelService {
 
     private static HotelService instance;
     private static final Logger LOGGER = Logger.getLogger(HotelService.class.getName());
-
+    private List<String> category = new ArrayList<>();
     private final HashMap<Long, Hotel> hotels = new HashMap<>();
     private long nextId = 0;
 
@@ -27,6 +28,18 @@ public class HotelService {
             instance.ensureTestData();
         }
         return instance;
+    }
+    
+    public List<String> getCategory () {
+        return category;
+    }
+    
+    public void addCategory (String newCategory) {
+        category.add(newCategory);
+    }
+    
+    public void removeCategory (String delCandidate) {
+        category.remove(delCandidate);
     }
 
     public synchronized List<Hotel> findAll() {
@@ -93,6 +106,11 @@ public class HotelService {
 
     public void ensureTestData() {
         if (findAll().isEmpty()) {
+            category.add("Hotel");
+            category.add("Hostel");
+            category.add("GuestHouse");
+            category.add("Appartments");
+            
             final String[] hotelData = new String[] {
                     "3 Nagas Luang Prabang - MGallery by Sofitel;4;https://www.booking.com/hotel/la/3-nagas-luang-prabang-by-accor.en-gb.html;Vat Nong Village, Sakkaline Road, Democratic Republic Lao, 06000 Luang Prabang, Laos;",
                     "Abby Boutique Guesthouse;1;https://www.booking.com/hotel/la/abby-boutique-guesthouse.en-gb.html;Ban Sawang , 01000 Vang Vieng, Laos",
@@ -124,12 +142,12 @@ public class HotelService {
                 Hotel h = new Hotel();
                 h.setName(split[0]);
                 h.setDescription("Empty");
-                h.setRating(split[1]);
+                h.setRating(Integer.parseInt(split[1]));
                 h.setUrl(split[2]);
                 h.setAddress(split[3]);
-                h.setCategory(HotelCategory.values()[r.nextInt(HotelCategory.values().length)]);
+                h.setCategory(category.get((int) (Math.random() * category.size())));
                 int daysOld = 0 - r.nextInt(365 * 30);
-                h.setOperatesFrom((LocalDate.now().plusDays(daysOld)));
+                h.setOperatesFrom((LocalDate.now().plusDays(daysOld)).getLong(ChronoField.EPOCH_DAY));
                 save(h);
             }
         }
