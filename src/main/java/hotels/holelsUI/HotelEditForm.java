@@ -1,7 +1,9 @@
-package holels;
+package hotels.holelsUI;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.vaadin.data.Binder;
 import com.vaadin.data.Converter;
@@ -18,13 +20,18 @@ import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+
+import hotels.categoryUI.Category;
+import hotels.categoryUI.CategoryService;
+
 import com.vaadin.ui.Notification.Type;
 
 public class HotelEditForm extends FormLayout {
 
     private static final long serialVersionUID = -1966192813627725835L;
-    private HotelUI ui;
-    private HotelService service = HotelService.getInstance();
+    private HotelView ui;
+    private HotelService hotelService = HotelService.getInstance();
+    private CategoryService categoryService = CategoryService.getInstance();
     private Hotel hotel;
     private Binder<Hotel> binder = new Binder<>(Hotel.class);
     private TextField name = new TextField("Name");
@@ -39,7 +46,7 @@ public class HotelEditForm extends FormLayout {
     private Button close = new Button("Close");
     private HorizontalLayout buttons = new HorizontalLayout();
 
-    public HotelEditForm (HotelUI ui) {
+    public HotelEditForm (HotelView ui) {
         this.ui = ui;
         this.setVisible(false);
 
@@ -51,10 +58,19 @@ public class HotelEditForm extends FormLayout {
         save.addClickListener(e -> save());
         close.addClickListener(e -> close());
 
-        category.setItems(service.getCategory());
+        category.setItems(categoryNames());
 
         addComponents(name, address, rating, operatesFrom, category, description, url, buttons);
         binder.bindInstanceFields(this);
+    }
+
+    private List<String> categoryNames () {
+        List<Category> categories = categoryService.findAll();
+        List<String> categoryNames = new ArrayList<>();
+        for (Category category : categories) {
+            categoryNames.add(category.getName());
+        }
+        return categoryNames;
     }
 
     private void setSizes () {
@@ -76,12 +92,42 @@ public class HotelEditForm extends FormLayout {
         binder.forField(address).asRequired(required + "address").withValidator(adressValidator()).bind(Hotel::getAddress, Hotel::setAddress);
         binder.forField(rating).asRequired(required + "rating").withConverter(ratingConverter()).bind(Hotel::getRating, Hotel::setRating);
         binder.forField(operatesFrom).asRequired(required + "opening date").withConverter(dateConverter()).bind(Hotel::getOperatesFrom, Hotel::setOperatesFrom);
-        binder.forField(category).asRequired(required + "category").bind(Hotel::getCategory, Hotel::setCategory);
+        binder.forField(category).asRequired(required + "category").withConverter(categoryConverter()).bind(Hotel::getCategory, Hotel::setCategory);
         binder.forField(description).bind(Hotel::getDescription, Hotel::setDescription);
         binder.forField(url).asRequired(required + "url").bind(Hotel::getUrl, Hotel::setUrl);
         
-        name.setDescription("Hotel name");
-        address.setDescription("Hotel address");
+        setToolTips();
+    }
+
+    private Converter<String, Category> categoryConverter () {
+        return new Converter<String, Category>() {
+            private static final long serialVersionUID = 4894727679522256179L;
+
+            @Override
+            public Result<Category> convertToModel (String value, ValueContext context) {
+                List<Category> categories = categoryService.findAll();
+                for (Category category : categories) {
+                    if (category.getName().equals(value)) return Result.ok(category);
+                }
+                return Result.error("No such category");
+            }
+
+            @Override
+            public String convertToPresentation (Category value, ValueContext context) {
+                if (value == null) return "";
+                return value.getName();
+            }
+        };
+    }
+
+    private void setToolTips () {
+        name.setDescription("Hotel name - String, not null");
+        address.setDescription("Hotel address - String, more that 5 simbols, not null");
+        rating.setDescription("Hotel rating - 0, 1, 2, 3, 4 or 5 stars? not null");
+        operatesFrom.setDescription("Hotel opening date - date before now, not null");
+        category.setDescription("Categoryfrom list to which the hotel belongs, not null");
+        description.setDescription("Hotel description");
+        url.setDescription("HTML hotel page");
     }
 
     private Converter<String, Integer> ratingConverter () {
@@ -150,7 +196,7 @@ public class HotelEditForm extends FormLayout {
             } catch (ValidationException e) {
                 Notification.show("Unable to save! " + e.getMessage(), Type.ERROR_MESSAGE);
             }
-            service.save(hotel);
+            hotelService.save(hotel);
             ui.updateList();
             Notification.show("Hotel " + hotel.getName() + " saved", Type.TRAY_NOTIFICATION);
             close();
@@ -162,6 +208,7 @@ public class HotelEditForm extends FormLayout {
     }
 
     public void setHotel (Hotel hotel) {
+        category.setItems(categoryNames());
         this.hotel = hotel;
         binder.readBean(this.hotel);
         setVisible(true);

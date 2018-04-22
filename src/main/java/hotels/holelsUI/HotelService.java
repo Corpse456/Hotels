@@ -1,4 +1,4 @@
-package holels;
+package hotels.holelsUI;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
@@ -11,11 +11,14 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import hotels.categoryUI.Category;
+import hotels.categoryUI.CategoryService;
+
 public class HotelService {
 
     private static HotelService instance;
     private static final Logger LOGGER = Logger.getLogger(HotelService.class.getName());
-    private List<String> category = new ArrayList<>();
+    private CategoryService categoryService = CategoryService.getInstance();
     private final HashMap<Long, Hotel> hotels = new HashMap<>();
     private long nextId = 0;
 
@@ -28,18 +31,6 @@ public class HotelService {
             instance.ensureTestData();
         }
         return instance;
-    }
-    
-    public List<String> getCategory () {
-        return category;
-    }
-    
-    public void addCategory (String newCategory) {
-        category.add(newCategory);
-    }
-    
-    public void removeCategory (String delCandidate) {
-        category.remove(delCandidate);
     }
 
     public synchronized List<Hotel> findAll() {
@@ -106,10 +97,6 @@ public class HotelService {
 
     public void ensureTestData() {
         if (findAll().isEmpty()) {
-            category.add("Hotel");
-            category.add("Hostel");
-            category.add("GuestHouse");
-            category.add("Appartments");
             
             final String[] hotelData = new String[] {
                     "3 Nagas Luang Prabang - MGallery by Sofitel;4;https://www.booking.com/hotel/la/3-nagas-luang-prabang-by-accor.en-gb.html;Vat Nong Village, Sakkaline Road, Democratic Republic Lao, 06000 Luang Prabang, Laos;",
@@ -145,7 +132,8 @@ public class HotelService {
                 h.setRating(Integer.parseInt(split[1]));
                 h.setUrl(split[2]);
                 h.setAddress(split[3]);
-                h.setCategory(category.get((int) (Math.random() * category.size())));
+                List<Category> allCategory = categoryService.findAll();
+                h.setCategory(allCategory.get((int) (Math.random() * allCategory.size())));
                 int daysOld = 0 - r.nextInt(365 * 30);
                 h.setOperatesFrom((LocalDate.now().plusDays(daysOld)).getLong(ChronoField.EPOCH_DAY));
                 save(h);
