@@ -170,7 +170,7 @@ public class HotelView extends VerticalLayout implements View {
         nameFilter.addValueChangeListener(e -> updateList());
         nameFilter.setValueChangeMode(ValueChangeMode.LAZY);
         
-        addressFilter.setPlaceholder("filter by name");
+        addressFilter.setPlaceholder("filter by address");
         addressFilter.addValueChangeListener(e -> updateList());
         addressFilter.setValueChangeMode(ValueChangeMode.LAZY);
     }
