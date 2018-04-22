@@ -1,6 +1,8 @@
-package holels;
+package hotels.holelsUI;
 
 import java.io.Serializable;
+
+import hotels.categoryUI.Category;
 
 @SuppressWarnings("serial")
 public class Hotel implements Serializable, Cloneable {
@@ -15,7 +17,7 @@ public class Hotel implements Serializable, Cloneable {
 
     private Long operatesFrom;
 
-    private String category;
+    private Category category;
 
     private String url;
     
@@ -88,11 +90,11 @@ public class Hotel implements Serializable, Cloneable {
         this.operatesFrom = operatesFrom;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
@@ -112,7 +114,7 @@ public class Hotel implements Serializable, Cloneable {
         this.description = description;
     }
 
-    public Hotel(Long id, String name, String address, Integer rating, Long operatesFrom, String category,
+    public Hotel(Long id, String name, String address, Integer rating, Long operatesFrom, Category category,
             String url, String description) {
         super();
         this.id = id;

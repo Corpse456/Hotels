@@ -1,18 +1,15 @@
-package holels;
+package hotels.holelsUI;
 
 import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.annotation.WebServlet;
-
-import com.vaadin.annotations.Theme;
-import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.event.selection.MultiSelectionListener;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -25,10 +22,11 @@ import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import com.vaadin.ui.themes.ValoTheme;
+
+import hotels.NavigatorUI;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser
@@ -39,27 +37,33 @@ import com.vaadin.ui.themes.ValoTheme;
  * intended to be overridden to add component to the user interface and
  * initialize non-component functionality.
  */
-@Theme("mytheme")
-public class HotelUI extends UI {
+
+public class HotelView extends VerticalLayout implements View {
 
     private static final long serialVersionUID = -4501291059692502904L;
-    private final VerticalLayout layout = new VerticalLayout();
-    private final HotelService service = HotelService.getInstance();
+    private final HotelService hotelService = HotelService.getInstance();
     private final Grid<Hotel> grid = new Grid<>();
     private final TextField nameFilter = new TextField();
     private final TextField addressFilter = new TextField();
     private final Button addHotel = new Button("Add hotel");
     private final Button deleteHotel = new Button("Delete hotel");
     private final Button editHotel = new Button("Edit hotel");
-    private final Button editCategory = new Button("Edit category");
     private final HotelEditForm form = new HotelEditForm(this);
     private final Label status = new Label();
     private final MenuBar menu = new MenuBar();
     private final HorizontalLayout controls = new HorizontalLayout();
     private final HorizontalLayout content = new HorizontalLayout();
+    private MenuItem hotelItem;
+    private MenuItem categoryItem;
 
     @Override
-    protected void init(VaadinRequest vaadinRequest) {
+    public void enter (ViewChangeEvent event) {
+        Notification.show("Showing view: Hotels");
+        hotelItem.setStyleName("highlight");
+        updateList();
+    }
+    
+    public HotelView() {
         menuCreating();
         
         gridSetUp();
@@ -72,13 +76,11 @@ public class HotelUI extends UI {
         
         deleteSetUp();
         editSetUp();
-        controls.addComponents(nameFilter, addressFilter, addHotel, deleteHotel, editHotel, editCategory);
+        controls.addComponents(nameFilter, addressFilter, addHotel, deleteHotel, editHotel);
         
         contentSetUp();
-        
-        layout.addComponents(menu, status, controls, content);
-        
-        setContent(layout);
+        statusSetUp();
+        addComponents(menu, status, controls, content);
         
         updateList();
         
@@ -103,14 +105,16 @@ public class HotelUI extends UI {
 
     private void deleteSetUp () {
         deleteHotel.setEnabled(false);
+        
         deleteHotel.addClickListener(e -> {
             Iterator<Hotel> delCandidates = grid.getSelectedItems().iterator();
             while (delCandidates.hasNext()) {
                 Hotel delCandidate = delCandidates.next();
                 notification(grid.getSelectedItems(), delCandidate);
-                service.delete(delCandidate);
+                hotelService.delete(delCandidate);
             }
             deleteHotel.setEnabled(false);
+            form.setVisible(false);
             updateList();
         });
     }
@@ -132,7 +136,7 @@ public class HotelUI extends UI {
         grid.addColumn(Hotel::getName).setCaption("Name");
         grid.addColumn(Hotel::getAddress).setCaption("Address");
         grid.addColumn(Hotel::getRating).setCaption("Rating");
-        grid.addColumn(hotel -> hotel.getCategory() != null && !hotel.getCategory().isEmpty() ? hotel.getCategory() : "No category").setCaption("Category");
+        grid.addColumn(hotel -> hotel.getCategory().getId() != null ? hotel.getCategory().getName() : "No category").setCaption("Category");
         grid.addColumn(hotel -> LocalDate.ofEpochDay(hotel.getOperatesFrom())).setCaption("Operates from");
         grid.addColumn(Hotel::getDescription).setCaption("Description");
         grid.addColumn(hotel -> "<a href=\"" + hotel.getUrl() + "\" target=\"_blank\">hotel info</a>", new HtmlRenderer()).setCaption("URL");
@@ -144,15 +148,13 @@ public class HotelUI extends UI {
             
             if (value.size() == 0) {
                 deleteHotel.setEnabled(false);
-                editHotel.setEnabled(false);
-            }
+            } else deleteHotel.setEnabled(true);
             if (value.size() == 1) {
                 editHotel.setEnabled(true);
-                deleteHotel.setEnabled(true);
             }
-            if (value.size() > 1) {
+            if (value.size() != 1) {
                 editHotel.setEnabled(false);
-                deleteHotel.setEnabled(true);
+                form.setVisible(false);
             }
         };
     }
@@ -174,40 +176,31 @@ public class HotelUI extends UI {
     }
     
     private void menuCreating () {
-        
         MenuBar.Command command = new MenuBar.Command() {
             private static final long serialVersionUID = -6641046536068795991L;
-            MenuItem previous = null;
-            
             @Override
             public void menuSelected (MenuItem selectedItem) {
-                String notif = "You are now in: " + selectedItem.getText();
-                status.setValue(notif);
-                
-                if (previous != null) previous.setStyleName(null);
-                selectedItem.setStyleName("highlight");
-                
-                previous = selectedItem;
+                if (selectedItem.equals(hotelItem)) return;
+                hotelItem.setStyleName(null);
+                getUI().getNavigator().navigateTo(selectedItem.getText());
             }
         };
+        hotelItem = menu.addItem(NavigatorUI.HOTEL_VIEW, VaadinIcons.BUILDING, command);
+        categoryItem = menu.addItem(NavigatorUI.CATEGORY_VIEW, VaadinIcons.RECORDS, command);
         
-        MenuItem hotelItem = menu.addItem("Hotel", VaadinIcons.BUILDING, command);
-        MenuItem categoryItem = menu.addItem("Category", VaadinIcons.RECORDS, command);
-        
-        command.menuSelected(hotelItem);
+        hotelItem.setCommand(command);
+        categoryItem.setCommand(command);
         
         menu.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
     }
 
-    public void updateList() {
-        List<Hotel> hotelList = service.findAll(nameFilter.getValue(), addressFilter.getValue());
-        grid.setItems(hotelList);
+    private void statusSetUp () {
+        String notif = "You are now in: " + hotelItem.getText();
+        status.setValue(notif);
     }
 
-    @WebServlet(urlPatterns = "/*", name = "HotelUIServlet", asyncSupported = true)
-    @VaadinServletConfiguration(ui = HotelUI.class, productionMode = false)
-    public static class HotelUIServlet extends VaadinServlet {
-
-        private static final long serialVersionUID = -8122768127039857033L;
+    public void updateList() {
+        List<Hotel> hotelList = hotelService.findAll(nameFilter.getValue(), addressFilter.getValue());
+        grid.setItems(hotelList);
     }
 }
