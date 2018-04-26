@@ -47,10 +47,9 @@ public class HotelView extends VerticalLayout implements View {
     private final Button editHotel = new Button("Edit hotel");
     private final HotelEditForm form = new HotelEditForm(this);
     private final Label status = new Label();
-    private MenuBar menu;
-    private NavigatorUI ui;
     private final HorizontalLayout controls = new HorizontalLayout();
     private final HorizontalLayout content = new HorizontalLayout();
+    private final MenuBar menu;
 
     @Override
     public void enter (ViewChangeEvent event) {
@@ -58,7 +57,7 @@ public class HotelView extends VerticalLayout implements View {
         updateList();
     }
 
-    public HotelView (NavigatorUI navigatorUI) {
+    public HotelView (NavigatorUI ui) {
         gridSetUp();
 
         formSetUp();
@@ -73,7 +72,6 @@ public class HotelView extends VerticalLayout implements View {
 
         contentSetUp();
         statusSetUp();
-        this.ui = navigatorUI;
         menu = ui.menuCreating();
         addComponents(menu, status, controls, content);
 
@@ -123,7 +121,7 @@ public class HotelView extends VerticalLayout implements View {
         grid.setSelectionMode(SelectionMode.MULTI);
         grid.asMultiSelect().addSelectionListener(listener());
         grid.setWidth(100, Unit.PERCENTAGE);
-        grid.setHeight(700, Unit.PIXELS);
+        grid.setHeight(650, Unit.PIXELS);
         gridAddColumns();
     }
 

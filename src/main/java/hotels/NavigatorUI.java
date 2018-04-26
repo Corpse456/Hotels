@@ -19,12 +19,9 @@ import hotels.holelsUI.HotelView;
 
 public class NavigatorUI extends UI {
     private static final long serialVersionUID = -4705632432578039781L;
-    public static final String HOTEL_VIEW = "Hotel";
-    public static final String CATEGORY_VIEW = "Category";
-    public Navigator navigator;
-    private MenuBar menu = new MenuBar();
-    private MenuItem hotelItem;
-    private MenuItem categoryItem;
+    private static final String HOTEL_VIEW = "Hotel";
+    private static final String CATEGORY_VIEW = "Category";
+    private Navigator navigator;
 
     public Navigator getNavigator () {
         return navigator;
@@ -38,27 +35,35 @@ public class NavigatorUI extends UI {
         ComponentContainerViewDisplay viewDisplay = new ComponentContainerViewDisplay(layout);
         navigator = new Navigator(UI.getCurrent(), viewDisplay);
         
-        menuCreating();
-
         navigator.addView(HOTEL_VIEW, new HotelView(this));
         navigator.addView(CATEGORY_VIEW, new CategoryView(this));
         
         navigator.navigateTo(HOTEL_VIEW);
     }
     
+    @SuppressWarnings("serial")
     public MenuBar menuCreating () {
-        menu = new MenuBar();
-        MenuBar.Command command = selectedItem -> {
-            if (selectedItem.equals(hotelItem)) return;
-            hotelItem.setStyleName(null);
-            navigator.navigateTo(selectedItem.getText());
+        MenuBar menu = new MenuBar();
+        
+        MenuBar.Command command = new MenuBar.Command() {
+            MenuItem previous = null;
+
+            @Override
+            public void menuSelected(MenuItem selectedItem) {
+                if (previous != null) previous.setStyleName(null);
+                
+                previous = selectedItem;
+                selectedItem.setStyleName("highlight");
+                
+                navigator.navigateTo(selectedItem.getText());
+            }
         };
-        hotelItem = menu.addItem(HOTEL_VIEW, VaadinIcons.BUILDING, command);
-        categoryItem = menu.addItem(CATEGORY_VIEW, VaadinIcons.RECORDS, command);
+        MenuItem hotelItem = menu.addItem(HOTEL_VIEW, VaadinIcons.BUILDING, command);
+        MenuItem categoryItem = menu.addItem(CATEGORY_VIEW, VaadinIcons.RECORDS, command);
 
         hotelItem.setCommand(command);
         categoryItem.setCommand(command);
-
+        
         menu.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
         return menu;
     }

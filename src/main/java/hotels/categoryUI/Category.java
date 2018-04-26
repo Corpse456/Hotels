@@ -2,8 +2,8 @@ package hotels.categoryUI;
 
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class Category implements Serializable, Cloneable {
-    private static final long serialVersionUID = 2268034213087099552L;
     
     private String name;
     private Long id;
