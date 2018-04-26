@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.vaadin.event.selection.MultiSelectionListener;
-import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.VaadinRequest;
@@ -18,13 +17,11 @@ import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
-import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.HtmlRenderer;
-import com.vaadin.ui.themes.ValoTheme;
 
 import hotels.NavigatorUI;
 
@@ -50,22 +47,17 @@ public class HotelView extends VerticalLayout implements View {
     private final Button editHotel = new Button("Edit hotel");
     private final HotelEditForm form = new HotelEditForm(this);
     private final Label status = new Label();
-    private final MenuBar menu = new MenuBar();
     private final HorizontalLayout controls = new HorizontalLayout();
     private final HorizontalLayout content = new HorizontalLayout();
-    private MenuItem hotelItem;
-    private MenuItem categoryItem;
+    private final MenuBar menu;
 
     @Override
     public void enter (ViewChangeEvent event) {
         Notification.show("Showing view: Hotels");
-        hotelItem.setStyleName("highlight");
         updateList();
     }
 
-    public HotelView () {
-        menuCreating();
-
+    public HotelView (NavigatorUI ui) {
         gridSetUp();
 
         formSetUp();
@@ -80,6 +72,7 @@ public class HotelView extends VerticalLayout implements View {
 
         contentSetUp();
         statusSetUp();
+        menu = ui.menuCreating();
         addComponents(menu, status, controls, content);
 
         updateList();
@@ -128,7 +121,7 @@ public class HotelView extends VerticalLayout implements View {
         grid.setSelectionMode(SelectionMode.MULTI);
         grid.asMultiSelect().addSelectionListener(listener());
         grid.setWidth(100, Unit.PERCENTAGE);
-        grid.setHeight(700, Unit.PIXELS);
+        grid.setHeight(650, Unit.PIXELS);
         gridAddColumns();
     }
 
@@ -176,23 +169,8 @@ public class HotelView extends VerticalLayout implements View {
         addressFilter.setValueChangeMode(ValueChangeMode.LAZY);
     }
 
-    private void menuCreating () {
-        MenuBar.Command command = selectedItem -> {
-            if (selectedItem.equals(hotelItem)) return;
-            hotelItem.setStyleName(null);
-            getUI().getNavigator().navigateTo(selectedItem.getText());
-        };
-        hotelItem = menu.addItem(NavigatorUI.HOTEL_VIEW, VaadinIcons.BUILDING, command);
-        categoryItem = menu.addItem(NavigatorUI.CATEGORY_VIEW, VaadinIcons.RECORDS, command);
-
-        hotelItem.setCommand(command);
-        categoryItem.setCommand(command);
-
-        menu.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
-    }
-
     private void statusSetUp () {
-        String notif = "You are now in: " + hotelItem.getText();
+        String notif = "You are now in: Hotel";
         status.setValue(notif);
     }
 

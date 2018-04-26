@@ -121,11 +121,11 @@ public class HotelEditForm extends FormLayout {
     }
 
     private void setToolTips () {
-        name.setDescription("Hotel name - String, not null");
-        address.setDescription("Hotel address - String, more that 5 simbols, not null");
-        rating.setDescription("Hotel rating - 0, 1, 2, 3, 4 or 5 stars, not null");
-        operatesFrom.setDescription("Hotel opening date - date before now, not null");
-        category.setDescription("Categoryfrom list to which the hotel belongs, not null");
+        name.setDescription("Hotel name - String, not empty");
+        address.setDescription("Hotel address - String, more that 5 simbols, not empty");
+        rating.setDescription("Hotel rating - 0, 1, 2, 3, 4 or 5 stars, not empty");
+        operatesFrom.setDescription("Hotel opening date - date before today, not empty");
+        category.setDescription("Categoryfrom list to which the hotel belongs, not empty");
         description.setDescription("Hotel description");
         url.setDescription("HTML hotel page");
     }
@@ -161,7 +161,7 @@ public class HotelEditForm extends FormLayout {
             @Override
             public Result<Long> convertToModel (LocalDate value, ValueContext context) {
                 if (!value.isBefore(LocalDate.now()))
-                    return Result.error("Wrong date. Should be until the current moment");
+                    return Result.error("Wrong date. Should be until the current day");
                 return Result.ok(value.getLong(ChronoField.EPOCH_DAY));
             }
 
