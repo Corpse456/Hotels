@@ -37,12 +37,7 @@ public class CategoryService {
                 arrayList.add(cat);
             }
         }
-        Collections.sort(arrayList, new Comparator<Category>() {
-            @Override
-            public int compare (Category o1, Category o2) {
-                return (int) (o2.getId() - o1.getId());
-            }
-        });
+        Collections.sort(arrayList, Comparator.comparing(Category::getId));
         return arrayList;
     }
 

@@ -62,28 +62,28 @@ public class HotelView extends VerticalLayout implements View {
         hotelItem.setStyleName("highlight");
         updateList();
     }
-    
-    public HotelView() {
+
+    public HotelView () {
         menuCreating();
-        
+
         gridSetUp();
-        
+
         formSetUp();
 
         filtersSetUp();
 
         addHotel.addClickListener(e -> form.setHotel(new Hotel()));
-        
+
         deleteSetUp();
         editSetUp();
         controls.addComponents(nameFilter, addressFilter, addHotel, deleteHotel, editHotel);
-        
+
         contentSetUp();
         statusSetUp();
         addComponents(menu, status, controls, content);
-        
+
         updateList();
-        
+
         Notification.show("Welcome to our website", Type.TRAY_NOTIFICATION);
     }
 
@@ -105,7 +105,7 @@ public class HotelView extends VerticalLayout implements View {
 
     private void deleteSetUp () {
         deleteHotel.setEnabled(false);
-        
+
         deleteHotel.addClickListener(e -> {
             Iterator<Hotel> delCandidates = grid.getSelectedItems().iterator();
             while (delCandidates.hasNext()) {
@@ -136,29 +136,30 @@ public class HotelView extends VerticalLayout implements View {
         grid.addColumn(Hotel::getName).setCaption("Name");
         grid.addColumn(Hotel::getAddress).setCaption("Address");
         grid.addColumn(Hotel::getRating).setCaption("Rating");
-        grid.addColumn(hotel -> hotel.getCategory().getId() != null ? hotel.getCategory().getName() : "No category").setCaption("Category");
+        grid.addColumn(hotel -> hotel.getCategory().getId() != null ? hotel.getCategory().getName() : "No category")
+                .setCaption("Category");
         grid.addColumn(hotel -> LocalDate.ofEpochDay(hotel.getOperatesFrom())).setCaption("Operates from");
         grid.addColumn(Hotel::getDescription).setCaption("Description");
-        grid.addColumn(hotel -> "<a href=\"" + hotel.getUrl() + "\" target=\"_blank\">hotel info</a>", new HtmlRenderer()).setCaption("URL");
+        grid.addColumn(hotel -> "<a href=\"" + hotel.getUrl() + "\" target=\"_blank\">hotel info</a>",
+                new HtmlRenderer()).setCaption("URL");
     }
 
     private MultiSelectionListener<Hotel> listener () {
         return e -> {
             Set<Hotel> value = e.getValue();
+
+            if (value.size() == 0) deleteHotel.setEnabled(false);
+            else deleteHotel.setEnabled(true);
             
-            if (value.size() == 0) {
-                deleteHotel.setEnabled(false);
-            } else deleteHotel.setEnabled(true);
-            if (value.size() == 1) {
-                editHotel.setEnabled(true);
-            }
+            if (value.size() == 1) editHotel.setEnabled(true);
+            
             if (value.size() != 1) {
                 editHotel.setEnabled(false);
                 form.setVisible(false);
             }
         };
     }
-    
+
     private void formSetUp () {
         form.setWidth("90%");
         form.setHeight(100, Unit.PERCENTAGE);
@@ -169,28 +170,24 @@ public class HotelView extends VerticalLayout implements View {
         nameFilter.setPlaceholder("filter by name");
         nameFilter.addValueChangeListener(e -> updateList());
         nameFilter.setValueChangeMode(ValueChangeMode.LAZY);
-        
+
         addressFilter.setPlaceholder("filter by address");
         addressFilter.addValueChangeListener(e -> updateList());
         addressFilter.setValueChangeMode(ValueChangeMode.LAZY);
     }
-    
+
     private void menuCreating () {
-        MenuBar.Command command = new MenuBar.Command() {
-            private static final long serialVersionUID = -6641046536068795991L;
-            @Override
-            public void menuSelected (MenuItem selectedItem) {
-                if (selectedItem.equals(hotelItem)) return;
-                hotelItem.setStyleName(null);
-                getUI().getNavigator().navigateTo(selectedItem.getText());
-            }
+        MenuBar.Command command = selectedItem -> {
+            if (selectedItem.equals(hotelItem)) return;
+            hotelItem.setStyleName(null);
+            getUI().getNavigator().navigateTo(selectedItem.getText());
         };
         hotelItem = menu.addItem(NavigatorUI.HOTEL_VIEW, VaadinIcons.BUILDING, command);
         categoryItem = menu.addItem(NavigatorUI.CATEGORY_VIEW, VaadinIcons.RECORDS, command);
-        
+
         hotelItem.setCommand(command);
         categoryItem.setCommand(command);
-        
+
         menu.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
     }
 
@@ -199,7 +196,7 @@ public class HotelView extends VerticalLayout implements View {
         status.setValue(notif);
     }
 
-    public void updateList() {
+    public void updateList () {
         List<Hotel> hotelList = hotelService.findAll(nameFilter.getValue(), addressFilter.getValue());
         grid.setItems(hotelList);
     }

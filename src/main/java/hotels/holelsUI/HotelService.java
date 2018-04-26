@@ -49,13 +49,7 @@ public class HotelService {
                 Logger.getLogger(HotelService.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        Collections.sort(arrayList, new Comparator<Hotel>() {
-
-            @Override
-            public int compare(Hotel o1, Hotel o2) {
-                return (int) (o2.getId() - o1.getId());
-            }
-        });
+        Collections.sort(arrayList, Comparator.comparing(Hotel::getId));
         return arrayList;
     }
 

@@ -95,7 +95,7 @@ public class HotelEditForm extends FormLayout {
         binder.forField(category).asRequired(required + "category").withConverter(categoryConverter()).bind(Hotel::getCategory, Hotel::setCategory);
         binder.forField(description).bind(Hotel::getDescription, Hotel::setDescription);
         binder.forField(url).asRequired(required + "url").bind(Hotel::getUrl, Hotel::setUrl);
-        
+
         setToolTips();
     }
 
@@ -160,7 +160,8 @@ public class HotelEditForm extends FormLayout {
 
             @Override
             public Result<Long> convertToModel (LocalDate value, ValueContext context) {
-                if (!value.isBefore(LocalDate.now())) return Result.error("Wrong date. Should be until the current moment");;
+                if (!value.isBefore(LocalDate.now()))
+                    return Result.error("Wrong date. Should be until the current moment");
                 return Result.ok(value.getLong(ChronoField.EPOCH_DAY));
             }
 
@@ -173,15 +174,10 @@ public class HotelEditForm extends FormLayout {
     }
 
     private Validator<String> adressValidator () {
-        Validator<String> adressValidator = new Validator<String>() {
-            private static final long serialVersionUID = 1206246530385327587L;
-            @Override
-            public ValidationResult apply (String value, ValueContext context) {
-                if (value.length() < 5) return ValidationResult.error("The adress is too short");
-                return ValidationResult.ok();
-            }
+        return (value, context) -> {
+            if (value.length() < 5) return ValidationResult.error("The adress is too short");
+            return ValidationResult.ok();
         };
-        return adressValidator;
     }
 
     private void close () {
@@ -200,7 +196,8 @@ public class HotelEditForm extends FormLayout {
             ui.updateList();
             Notification.show("Hotel " + hotel.getName() + " saved", Type.TRAY_NOTIFICATION);
             close();
-        } else Notification.show("Unable to save! please review errors and fill in all the required fields", Type.ERROR_MESSAGE);
+        } else Notification.show("Unable to save! please review errors and fill in all the required fields",
+                Type.ERROR_MESSAGE);
     }
 
     public Hotel getHotel () {

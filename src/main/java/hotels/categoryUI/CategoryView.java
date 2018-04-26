@@ -131,14 +131,10 @@ public class CategoryView extends VerticalLayout implements View {
     }
 
     private void menuCreating () {
-        MenuBar.Command command = new MenuBar.Command() {
-            private static final long serialVersionUID = -6641046536068795991L;
-            @Override
-            public void menuSelected (MenuItem selectedItem) {
-                if (selectedItem.equals(categoryItem)) return;
-                categoryItem.setStyleName(null);
-                getUI().getNavigator().navigateTo(selectedItem.getText());
-            }
+        MenuBar.Command command = selectedItem -> {
+            if (selectedItem.equals(categoryItem)) return;
+            categoryItem.setStyleName(null);
+            getUI().getNavigator().navigateTo(selectedItem.getText());
         };
         hotelItem = menu.addItem(NavigatorUI.HOTEL_VIEW, VaadinIcons.BUILDING, command);
         categoryItem = menu.addItem(NavigatorUI.CATEGORY_VIEW, VaadinIcons.RECORDS, command);
