@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.vaadin.event.selection.MultiSelectionListener;
-import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.ValueChangeMode;
@@ -18,18 +17,14 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.themes.ValoTheme;
 
 import hotels.NavigatorUI;
 
 public class CategoryView extends VerticalLayout implements View {
 
     private static final long serialVersionUID = 890806074356068662L;
-    private final MenuBar menu = new MenuBar();
-    private MenuItem hotelItem;
-    private MenuItem categoryItem;
+    private MenuBar menu = new MenuBar();
     private final Label status = new Label();
     private final CategoryService service = CategoryService.getInstance();
     private final Grid<Category> grid = new Grid<>();
@@ -40,17 +35,15 @@ public class CategoryView extends VerticalLayout implements View {
     private final Button editCategory = new Button("Edit category");
     private final TextField filter = new TextField();
     private final CategoryEditForm form = new CategoryEditForm(this);
+    private NavigatorUI ui;
     
     @Override
     public void enter (ViewChangeEvent event) {
         Notification.show("Showing view: Category");
-        categoryItem.setStyleName("highlight");
         updateList();
     }
 
-    public CategoryView () {
-        menuCreating();
-        
+    public CategoryView (NavigatorUI navigatorUI) {
         gridSetUp();
         content.addComponents(grid, form);
         
@@ -61,6 +54,8 @@ public class CategoryView extends VerticalLayout implements View {
         controls.addComponents(filter, addCategory, deleteCategory, editCategory);
         
         statusSetUp();
+        this.ui = navigatorUI;
+        menu = ui.menuCreating();
         addComponents(menu, status, controls, content);
     }
     
@@ -130,24 +125,8 @@ public class CategoryView extends VerticalLayout implements View {
         filter.setValueChangeMode(ValueChangeMode.LAZY);
     }
 
-    private void menuCreating () {
-        MenuBar.Command command = selectedItem -> {
-            if (selectedItem.equals(categoryItem)) return;
-            categoryItem.setStyleName(null);
-            getUI().getNavigator().navigateTo(selectedItem.getText());
-        };
-        hotelItem = menu.addItem(NavigatorUI.HOTEL_VIEW, VaadinIcons.BUILDING, command);
-        categoryItem = menu.addItem(NavigatorUI.CATEGORY_VIEW, VaadinIcons.RECORDS, command);
-        
-        hotelItem.setCommand(command);
-        categoryItem.setCommand(command);
-        
-        
-        menu.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
-    }
-
     private void statusSetUp () {
-        String notif = "You are now in: " + categoryItem.getText();
+        String notif = "You are now in: Category";
         status.setValue(notif);
     }
 }

@@ -26,7 +26,7 @@ public class CategoryEditForm extends FormLayout {
         this.setVisible(false);
         
         binder.forField(name).asRequired("Please enter a name").bind(Category::getName, Category::setName);
-        name.setDescription("Category name - String, not null");
+        name.setDescription("Category name - String, not empty");
         
         buttons.addComponents(save, close);
         save.addClickListener(e -> save());
