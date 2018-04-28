@@ -34,7 +34,7 @@
 @mixin mytheme {
   @include valo;
 
-	.highlight {
+	.borderless .v-menubar-menuitem-highlight {
     	background: #979797; /* gray */
 	}
 }

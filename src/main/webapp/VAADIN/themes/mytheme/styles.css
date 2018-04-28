@@ -15053,6 +15053,6 @@ div.v-layout.v-horizontal.v-widget {
 	overflow: hidden;
 }
 
-.mytheme .highlight {
+.mytheme .borderless .v-menubar-menuitem-highlight {
 	background: #979797;
 }
