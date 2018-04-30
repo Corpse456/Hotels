@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet author="neznaev" id="init">
+		<!-- ================================= Hotels ================================= -->
+		<createTable tableName="HOTEL">
+			<column autoIncrement="true" name="ID" type="BIGINT">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="OPTLOCK" type="BIGINT" />
+			<column name="NAME" type="VARCHAR(255)" />
+			<column name="ADDRESS" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="RATING" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="OPERATES_FROM" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="CATEGORY" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="URL" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+
+	<changeSet author="neznaev" id="initCategory">
+		<!-- ================================= Category ================================= -->
+		<createTable tableName="CATEGORY">
+			<column autoIncrement="true" name="ID" type="BIGINT">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="OPTLOCK" type="BIGINT" />
+			<column name="NAME" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<rollback>
+			<dropTable tableName="CATEGORY" />
+		</rollback>
+	</changeSet>
+
+	<changeSet author="neznaev" id="addDescription">
+		<addColumn tableName="HOTEL">
+			<column name="DESCRIPTION" type="varchar(255)" />
+		</addColumn>
+
+		<rollback>
+			<dropColumn tableName="HOTEL" columnName="DESCRIPTION" />
+		</rollback>
+	</changeSet>
+
+	<changeSet author="neznaev" id="addNotNullToName">
+		<addNotNullConstraint
+			columnDataType="VARCHAR(255)" columnName="NAME" tableName="HOTEL" />
+
+		<rollback>
+			<dropNotNullConstraint
+				columnDataType="VARCHAR(255)" tableName="HOTEL" columnName="NAME" />
+		</rollback>
+	</changeSet>
+
+	<changeSet author="neznaev" id="renameCategory">
+		<renameColumn columnDataType="VARCHAR(255)"
+			newColumnName="CATEGORY_ID" oldColumnName="CATEGORY"
+			tableName="HOTEL" />
+
+		<rollback>
+			<renameColumn columnDataType="VARCHAR(255)"
+				newColumnName="CATEGORY" oldColumnName="CATEGORY_ID"
+				tableName="HOTEL" />
+		</rollback>
+	</changeSet>
+
+	<changeSet author="neznaev" id="categoryUpdate">
+		<modifyDataType tableName="HOTEL"
+			columnName="CATEGORY_ID" newDataType="BIGINT" />
+		<addNotNullConstraint columnDataType="BIGINT"
+			columnName="CATEGORY_ID" tableName="HOTEL" />
+
+		<rollback>
+			<modifyDataType tableName="HOTEL"
+				columnName="CATEGORY_ID" newDataType="VARCHAR(255)" />
+			<addNotNullConstraint
+				columnDataType="VARCHAR(255)" columnName="CATEGORY_ID"
+				tableName="HOTEL" />
+		</rollback>
+	</changeSet>
+
+	<changeSet author="neznaev" id="addDefaultValueCategory">
+		<addDefaultValue columnDataType="VARCHAR(255)"
+			columnName="CATEGORY_ID" defaultValue="0" tableName="HOTEL" />
+
+		<rollback>
+			<dropDefaultValue columnDataType="VARCHAR(255)"
+				columnName="CATEGORY_ID" tableName="HOTEL" />
+		</rollback>
+	</changeSet>
+
+	<changeSet author="neznaev"
+		id="addForeignKeyConstraint-category">
+		<addForeignKeyConstraint
+			baseColumnNames="CATEGORY_ID" baseTableName="HOTEL"
+			constraintName="fk_category_id" onDelete="CASCADE" onUpdate="CASCADE"
+			referencedColumnNames="ID" referencedTableName="CATEGORY" />
+
+		<rollback>
+			<dropForeignKeyConstraint
+				baseTableName="HOTEL" constraintName="fk_category_id" />
+		</rollback>
+	</changeSet>
+
+	<changeSet author="neznaev" id="insertHotel">
+		<insert tableName="CATEGORY">
+			<column name="NAME" type="varchar(255)">Hotel</column>
+		</insert>
+
+		<rollback>
+			<delete tableName="CATEGORY">
+				<where>NAME = 'Hotel'</where>
+			</delete>
+		</rollback>
+	</changeSet>
+
+	<changeSet author="neznaev" id="insertHostel">
+		<insert tableName="CATEGORY">
+			<column name="NAME" type="varchar(255)">Hostel</column>
+		</insert>
+
+		<rollback>
+			<delete tableName="CATEGORY">
+				<where>NAME = 'Hostel'</where>
+			</delete>
+		</rollback>
+	</changeSet>
+
+	<changeSet author="neznaev" id="insertGuestHouse">
+		<insert tableName="CATEGORY">
+			<column name="NAME" type="varchar(255)">GuestHouse</column>
+		</insert>
+
+		<rollback>
+			<delete tableName="CATEGORY">
+				<where>NAME = 'GuestHouse'</where>
+			</delete>
+		</rollback>
+	</changeSet>
+
+	<changeSet author="neznaev" id="insertAppartment">
+		<insert tableName="CATEGORY">
+			<column name="NAME" type="varchar(255)">Appartments</column>
+		</insert>
+
+		<rollback>
+			<delete tableName="CATEGORY">
+				<where>NAME = 'Appartments'</where>
+			</delete>
+		</rollback>
+	</changeSet>
+
+	<changeSet author="neznaev" id="insertFirstHotel">
+		<insert tableName="HOTEL">
+			<column name="CATEGORY_ID"
+				valueComputed="(SELECT ID FROM CATEGORY WHERE NAME = 'Hotel')" />
+			<column name="NAME">Phakchai Hotel</column>
+			<column name="ADDRESS">137 Ban Wattay Mueng Sikothabong Vientiane Laos, 01000 Vientiane, Laos</column>
+			<column name="RATING">2</column>
+			<column name="OPERATES_FROM">8816</column>
+			<column name="URL">https://www.booking.com/hotel/la/phakchai.en-gb.html</column>
+			<column name="DESCRIPTION">First</column>
+		</insert>
+		
+		<rollback>
+			<delete tableName="HOTEL">
+				<where>NAME = 'Phakchai Hotel'</where>
+			</delete>
+		</rollback>
+	</changeSet>
+
+	<changeSet author="neznaev" id="insertSecondHotel">
+		<insert tableName="HOTEL">
+			<column name="CATEGORY_ID"
+				valueComputed="(SELECT ID FROM CATEGORY WHERE NAME = 'Hostel')" />
+			<column name="NAME">Phetmeuangsam Hotel</column>
+			<column name="ADDRESS">Ban Phanhxai, Xumnuea, Xam Nua, 01000 Xam Nua, Laos</column>
+			<column name="RATING">3</column>
+			<column name="OPERATES_FROM">14812</column>
+			<column name="URL">https://www.booking.com/hotel/la/phetmisay.en-gb.html</column>
+			<column name="DESCRIPTION">Second</column>
+		</insert>
+		
+		<rollback>
+			<delete tableName="HOTEL">
+				<where>NAME = 'Phetmeuangsam Hotel'</where>
+			</delete>
+		</rollback>
+	</changeSet>
+
+	<changeSet author="neznaev" id="insertThirdHotel">
+		<insert tableName="HOTEL">
+			<column name="CATEGORY_ID"
+				valueComputed="(SELECT ID FROM CATEGORY WHERE NAME = 'Appartments')" />
+			<column name="NAME">Pakse Mekong Hotel</column>
+			<column name="ADDRESS">No 062 Khemkong Road, Pakse District, Champasak, Laos, 01000 Pakse, Laos</column>
+			<column name="RATING">4</column>
+			<column name="OPERATES_FROM">16539</column>
+			<column name="URL">https://www.booking.com/hotel/la/pakse-mekong.en-gb.html</column>
+			<column name="DESCRIPTION">Third</column>
+		</insert>
+		
+		<rollback>
+			<delete tableName="HOTEL">
+				<where>NAME = 'Pakse Mekong Hotel'</where>
+			</delete>
+		</rollback>
+	</changeSet>
+
+	<changeSet author="neznaev" id="insertFourthHotel">
+		<insert tableName="HOTEL">
+			<column name="CATEGORY_ID"
+				valueComputed="(SELECT ID FROM CATEGORY WHERE NAME = 'GuestHouse')" />
+			<column name="NAME">Niraxay Apartment</column>
+			<column name="ADDRESS">Samsenthai Road Ban Sihom , 01000 Vientiane, Laos</column>
+			<column name="RATING">5</column>
+			<column name="OPERATES_FROM">7317</column>
+			<column name="URL">https://www.booking.com/hotel/la/niraxay-apartment.en-gb.html</column>
+			<column name="DESCRIPTION">Fourth</column>
+		</insert>
+		
+		<rollback>
+			<delete tableName="HOTEL">
+				<where>NAME = 'Niraxay Apartment'</where>
+			</delete>
+		</rollback>
+	</changeSet>
+</databaseChangeLog>
