@@ -2,11 +2,18 @@ package hotels.holelsUI;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 import hotels.categoryUI.Category;
 
+@Entity
 @SuppressWarnings("serial")
 public class Hotel implements Serializable, Cloneable {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name = "";
@@ -114,10 +121,9 @@ public class Hotel implements Serializable, Cloneable {
         this.description = description;
     }
 
-    public Hotel(Long id, String name, String address, Integer rating, Long operatesFrom, Category category,
+    public Hotel(String name, String address, Integer rating, Long operatesFrom, Category category,
             String url, String description) {
         super();
-        this.id = id;
         this.name = name;
         this.address = address;
         this.rating = rating;

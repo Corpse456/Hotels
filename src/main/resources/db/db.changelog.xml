@@ -84,15 +84,10 @@
 	<changeSet author="neznaev" id="categoryUpdate">
 		<modifyDataType tableName="HOTEL"
 			columnName="CATEGORY_ID" newDataType="BIGINT" />
-		<addNotNullConstraint columnDataType="BIGINT"
-			columnName="CATEGORY_ID" tableName="HOTEL" />
 
 		<rollback>
 			<modifyDataType tableName="HOTEL"
 				columnName="CATEGORY_ID" newDataType="VARCHAR(255)" />
-			<addNotNullConstraint
-				columnDataType="VARCHAR(255)" columnName="CATEGORY_ID"
-				tableName="HOTEL" />
 		</rollback>
 	</changeSet>
 
@@ -110,7 +105,7 @@
 		id="addForeignKeyConstraint-category">
 		<addForeignKeyConstraint
 			baseColumnNames="CATEGORY_ID" baseTableName="HOTEL"
-			constraintName="fk_category_id" onDelete="CASCADE" onUpdate="CASCADE"
+			constraintName="fk_category_id" onDelete="SET NULL"
 			referencedColumnNames="ID" referencedTableName="CATEGORY" />
 
 		<rollback>

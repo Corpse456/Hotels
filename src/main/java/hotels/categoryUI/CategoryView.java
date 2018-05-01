@@ -12,12 +12,9 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-
-import hotels.NavigatorUI;
 
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Notification.Type;
@@ -35,7 +32,6 @@ public class CategoryView extends VerticalLayout implements View {
     private final Button editCategory = new Button("Edit category");
     private final TextField filter = new TextField();
     private final CategoryEditForm form = new CategoryEditForm(this);
-    private final MenuBar menu;
     
     @Override
     public void enter (ViewChangeEvent event) {
@@ -43,7 +39,7 @@ public class CategoryView extends VerticalLayout implements View {
         updateList();
     }
 
-    public CategoryView (NavigatorUI ui) {
+    public CategoryView () {
         gridSetUp();
         content.addComponents(grid, form);
         
@@ -54,8 +50,7 @@ public class CategoryView extends VerticalLayout implements View {
         controls.addComponents(filter, addCategory, deleteCategory, editCategory);
         
         statusSetUp();
-        menu = ui.menuCreating();
-        addComponents(menu, status, controls, content);
+        addComponents(status, controls, content);
     }
     
     private void gridSetUp () {

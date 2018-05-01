@@ -2,11 +2,19 @@ package hotels.categoryUI;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 @SuppressWarnings("serial")
 public class Category implements Serializable, Cloneable {
     
-    private String name;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
 
     public boolean isPersisted() {
         return id != null;

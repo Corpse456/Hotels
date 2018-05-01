@@ -5,13 +5,13 @@ import javax.servlet.annotation.WebServlet;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.Navigator;
-import com.vaadin.navigator.Navigator.ComponentContainerViewDisplay;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.MenuBar.MenuItem;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.themes.ValoTheme;
 
 import hotels.categoryUI.CategoryView;
@@ -21,30 +21,30 @@ public class NavigatorUI extends UI {
     private static final long serialVersionUID = -4705632432578039781L;
     private static final String HOTEL_VIEW = "Hotel";
     private static final String CATEGORY_VIEW = "Category";
-    private Navigator navigator;
+    
+    private final Panel panel = new Panel();
+    private final Navigator navigator = new Navigator(this, panel);
 
+    private final MenuBar menu = new MenuBar();
+    private final VerticalLayout layout = new VerticalLayout();
+    
     public Navigator getNavigator () {
         return navigator;
     }
 
     @Override
     protected void init (VaadinRequest request) {
-        final VerticalLayout layout = new VerticalLayout();
+        menuCreating();
+        
+        layout.addComponents(menu, panel);
         setContent(layout);
         
-        ComponentContainerViewDisplay viewDisplay = new ComponentContainerViewDisplay(layout);
-        navigator = new Navigator(UI.getCurrent(), viewDisplay);
-        
-        navigator.addView(HOTEL_VIEW, new HotelView(this));
-        navigator.addView(CATEGORY_VIEW, new CategoryView(this));
-        
-        navigator.navigateTo(HOTEL_VIEW);
+        navigator.addView(HOTEL_VIEW, new HotelView());
+        navigator.addView(CATEGORY_VIEW, new CategoryView());
     }
     
     @SuppressWarnings("serial")
-    public MenuBar menuCreating () {
-        MenuBar menu = new MenuBar();
-        
+    public void menuCreating () {
         MenuBar.Command command = new MenuBar.Command() {
             MenuItem previous = null;
 
@@ -58,14 +58,12 @@ public class NavigatorUI extends UI {
                 navigator.navigateTo(selectedItem.getText());
             }
         };
-        MenuItem hotelItem = menu.addItem(HOTEL_VIEW, VaadinIcons.BUILDING, command);
-        MenuItem categoryItem = menu.addItem(CATEGORY_VIEW, VaadinIcons.RECORDS, command);
+        menu.addItem(HOTEL_VIEW, VaadinIcons.BUILDING, command);
+        menu.addItem(CATEGORY_VIEW, VaadinIcons.RECORDS, command);
 
-        hotelItem.setCommand(command);
-        categoryItem.setCommand(command);
-        
         menu.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
-        return menu;
+        panel.setSizeFull();
+        panel.setStyleName(ValoTheme.PANEL_BORDERLESS);
     }
     
     @WebServlet(urlPatterns = "/*", name = "NavigatorUIServlet", asyncSupported = true)
