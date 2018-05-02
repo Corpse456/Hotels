@@ -8,8 +8,16 @@
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect" />
 			<property name="hibernate.show_sql" value="true"/>
 			<property name="hibernate.format_sql" value="true"/>				
-
-			<property name="hibernate.hbm2ddl.auto" value="validate"/>	
+<!--
+			<property name="hibernate.hbm2ddl.auto" value="create"/>-->	
+			
+			<property name="hibernate.connection.driver_class"
+				value="com.mysql.jdbc.Driver" />
+			<property name="hibernate.connection.url"
+				value="jdbc:mysql://localhost:3306/demo_hotels?serverTimezone=UTC" />
+			<property name="hibernate.connection.user" value="demo" />
+			<property name="hibernate.connection.password"
+				value="D1e2m3o4O1E3AE!3" />
 		</properties>
 	</persistence-unit>
 </persistence>
