@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import hotels.categoryUI.Category;
 
@@ -26,6 +27,10 @@ public class Hotel implements Serializable, Cloneable {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
+    
+    @Version
+    @Column(name = "OPTLOCK", columnDefinition = "bigint DEFAULT 0")
+    private Long version = 0L;
 
     private String name = "";
 
@@ -50,7 +55,7 @@ public class Hotel implements Serializable, Cloneable {
 
     @Override
     public String toString () {
-        return name + " " + rating + "stars " + address + " !!!!" + category + "!!!!!!";
+        return name + " " + rating + "stars " + address;
     }
 
     @Override
@@ -72,6 +77,14 @@ public class Hotel implements Serializable, Cloneable {
 
     public void setId (Long id) {
         this.id = id;
+    }
+    
+    public Long getVersion () {
+        return version;
+    }
+    
+    public void setVersion (Long version) {
+        this.version = version;
     }
 
     public String getName () {

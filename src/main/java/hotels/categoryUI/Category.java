@@ -2,6 +2,7 @@ package hotels.categoryUI;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 @Entity
 @Table(name = "CATEGORY")
@@ -22,6 +24,10 @@ public class Category implements Serializable, Cloneable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @Version
+    @Column(name = "OPTLOCK", columnDefinition = "bigint DEFAULT 0")
+    private Long version = 0L;;
+
     private String name;
 
     public boolean isPersisted() {
@@ -41,6 +47,14 @@ public class Category implements Serializable, Cloneable {
     @Override
     public int hashCode() {
         return super.hashCode();
+    }
+    
+    public Long getVersion () {
+        return version;
+    }
+    
+    public void setVersion (Long version) {
+        this.version = version;
     }
     
     public Category () {
