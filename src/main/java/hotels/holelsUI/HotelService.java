@@ -50,6 +50,7 @@ public class HotelService {
     public synchronized void delete (Hotel value) {
         EntityTransaction tx = em.getTransaction();
         value = em.find(Hotel.class, value.getId());
+        
         tx.begin();
         em.remove(value);
         tx.commit();

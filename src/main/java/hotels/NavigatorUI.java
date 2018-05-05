@@ -24,10 +24,10 @@ import com.vaadin.ui.themes.ValoTheme;
 import hotels.categoryUI.CategoryView;
 import hotels.holelsUI.HotelView;
 
-@Theme("mytheme")
+@Theme ("mytheme")
 @SpringUI
 public class NavigatorUI extends UI {
-    
+
     @WebListener
     public static class MyContextLoaderListener extends ContextLoaderListener {
     }
@@ -36,53 +36,54 @@ public class NavigatorUI extends UI {
     @EnableVaadin
     public static class MyConfiguration {
     }
-    
+
     private static final long serialVersionUID = -4705632432578039781L;
     private static final String HOTEL_VIEW = "Hotel";
     private static final String CATEGORY_VIEW = "Category";
-    
+
     private final Panel panel = new Panel();
     private final Navigator navigator = new Navigator(this, panel);
 
     private final MenuBar menu = new MenuBar();
     private final VerticalLayout layout = new VerticalLayout();
-    
+
     @Override
     protected void init (VaadinRequest request) {
-        menuCreating();
-        
         layout.addComponents(menu, panel);
         setContent(layout);
-        
+
         navigator.addView(CATEGORY_VIEW, new CategoryView());
         navigator.addView(HOTEL_VIEW, new HotelView());
+
+        menuCreating();
     }
-    
-    @SuppressWarnings("serial")
+
+    @SuppressWarnings ("serial")
     public void menuCreating () {
         MenuBar.Command command = new MenuBar.Command() {
             MenuItem previous = null;
 
             @Override
-            public void menuSelected(MenuItem selectedItem) {
+            public void menuSelected (MenuItem selectedItem) {
                 if (previous != null) previous.setStyleName(null);
-                
+
                 previous = selectedItem;
                 selectedItem.setStyleName("highlight");
-                
+
                 navigator.navigateTo(selectedItem.getText());
             }
         };
-        menu.addItem(HOTEL_VIEW, VaadinIcons.BUILDING, command);
+        MenuItem hotel = menu.addItem(HOTEL_VIEW, VaadinIcons.BUILDING, command);
         menu.addItem(CATEGORY_VIEW, VaadinIcons.RECORDS, command);
+        command.menuSelected(hotel);
 
         menu.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
         panel.setSizeFull();
         panel.setStyleName(ValoTheme.PANEL_BORDERLESS);
     }
-    
-    @WebServlet(urlPatterns = "/*", name = "NavigatorUIServlet", asyncSupported = true)
-    @VaadinServletConfiguration(ui = NavigatorUI.class, productionMode = false)
+
+    @WebServlet (urlPatterns = "/*", name = "NavigatorUIServlet", asyncSupported = true)
+    @VaadinServletConfiguration (ui = NavigatorUI.class, productionMode = false)
     public static class NavigatorUIServlet extends VaadinServlet {
 
         private static final long serialVersionUID = -8122768127039857033L;

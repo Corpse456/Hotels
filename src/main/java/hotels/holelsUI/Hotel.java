@@ -50,12 +50,7 @@ public class Hotel implements Serializable, Cloneable {
 
     @Override
     public String toString () {
-        return name + " " + rating + "stars " + address;
-    }
-
-    @Override
-    protected Hotel clone () throws CloneNotSupportedException {
-        return (Hotel) super.clone();
+        return name + " " + rating + "stars " + address + " !!!!" + category + "!!!!!!";
     }
 
     @Override

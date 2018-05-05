@@ -113,7 +113,7 @@
 				baseTableName="HOTEL" constraintName="fk_category_id" />
 		</rollback>
 	</changeSet>
-<!-- 
+ 
 	<changeSet author="neznaev" id="insertHotel">
 		<insert tableName="CATEGORY">
 			<column name="NAME" type="varchar(255)">Hotel</column>
@@ -236,5 +236,5 @@
 				<where>NAME = 'Niraxay Apartment'</where>
 			</delete>
 		</rollback>
-	</changeSet>-->
+	</changeSet>
 </databaseChangeLog>

@@ -28,7 +28,7 @@ public class CategoryView extends VerticalLayout implements View {
     private final HorizontalLayout controls = new HorizontalLayout();
     private final HorizontalLayout content = new HorizontalLayout();
     private final Button addCategory = new Button("Add category");
-    private final Button deleteCategory = new Button("Delete categry");
+    private final Button deleteCategory = new Button("Delete category");
     private final Button editCategory = new Button("Edit category");
     private final TextField filter = new TextField();
     private final CategoryEditForm form = new CategoryEditForm(this);

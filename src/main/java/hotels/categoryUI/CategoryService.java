@@ -41,6 +41,7 @@ public class CategoryService {
     public synchronized void delete (Category value) {
         EntityTransaction tx = em.getTransaction();
         value = em.find(Category.class, value.getId());
+        
         tx.begin();
         em.remove(value);
         tx.commit();
@@ -53,7 +54,7 @@ public class CategoryService {
         if (entry.getId() == null) {
             em.persist(entry);
         } else {
-            em.merge(entry);
+            em.merge(entry); 
         }
  
         tx.commit();
