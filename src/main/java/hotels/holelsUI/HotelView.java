@@ -16,14 +16,11 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.HtmlRenderer;
-
-import hotels.NavigatorUI;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser
@@ -49,7 +46,6 @@ public class HotelView extends VerticalLayout implements View {
     private final Label status = new Label();
     private final HorizontalLayout controls = new HorizontalLayout();
     private final HorizontalLayout content = new HorizontalLayout();
-    private final MenuBar menu;
 
     @Override
     public void enter (ViewChangeEvent event) {
@@ -57,7 +53,7 @@ public class HotelView extends VerticalLayout implements View {
         updateList();
     }
 
-    public HotelView (NavigatorUI ui) {
+    public HotelView () {
         gridSetUp();
 
         formSetUp();
@@ -72,8 +68,7 @@ public class HotelView extends VerticalLayout implements View {
 
         contentSetUp();
         statusSetUp();
-        menu = ui.menuCreating();
-        addComponents(menu, status, controls, content);
+        addComponents(status, controls, content);
 
         updateList();
 
@@ -129,7 +124,7 @@ public class HotelView extends VerticalLayout implements View {
         grid.addColumn(Hotel::getName).setCaption("Name");
         grid.addColumn(Hotel::getAddress).setCaption("Address");
         grid.addColumn(Hotel::getRating).setCaption("Rating");
-        grid.addColumn(hotel -> hotel.getCategory().getId() != null ? hotel.getCategory().getName() : "No category")
+        grid.addColumn(hotel -> hotel.getCategory() != null ? hotel.getCategory().getName() : "No category")
                 .setCaption("Category");
         grid.addColumn(hotel -> LocalDate.ofEpochDay(hotel.getOperatesFrom())).setCaption("Operates from");
         grid.addColumn(Hotel::getDescription).setCaption("Description");

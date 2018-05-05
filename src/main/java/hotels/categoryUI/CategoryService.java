@@ -1,18 +1,17 @@
 package hotels.categoryUI;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 
 public class CategoryService {
     private static CategoryService instance;
-    private HashMap<Long, Category> category = new HashMap<>();
-    private static final Logger LOGGER = Logger.getLogger(CategoryService.class.getName());
-    private long nextId = 0;
+    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("demo_hotels");
+    private EntityManager em = emf.createEntityManager();
 
     private CategoryService () {
     }
@@ -26,56 +25,48 @@ public class CategoryService {
     }
 
     public synchronized List<Category> findAll () {
-        return findAll(null);
+        return em.createQuery("SELECT e from Category e", Category.class).getResultList();
     }
 
     public synchronized List<Category> findAll (String filter) {
-        ArrayList<Category> arrayList = new ArrayList<>();
-        for (Category cat : category.values()) {
-            boolean passesFilter = filter(cat, filter);
-            if (passesFilter) {
-                arrayList.add(cat);
-            }
-        }
-        Collections.sort(arrayList, Comparator.comparing(Category::getId));
-        return arrayList;
-    }
-
-    private boolean filter (Category category, String filter) {
-        boolean passFilter = (filter == null || filter.isEmpty())
-                || category.getName().toLowerCase().contains(filter.toLowerCase());
-
-        return passFilter;
+        TypedQuery<Category> namedQuery = em.createNamedQuery("Category.byName", Category.class);
+        namedQuery.setParameter("filter", "%" + filter + "%");
+        return namedQuery.getResultList();
     }
 
     public synchronized long count () {
-        return category.size();
+        return findAll().size();
     }
 
     public synchronized void delete (Category value) {
-        category.remove(value.getId());
-        value.setId(null);
-        value.setName(null);
+        EntityTransaction tx = em.getTransaction();
+        value = em.find(Category.class, value.getId());
+        
+        tx.begin();
+        em.remove(value);
+        tx.commit();
     }
 
     public synchronized void save (Category entry) {
-        if (entry == null) {
-            LOGGER.log(Level.SEVERE, "Category is null.");
-            return;
-        }
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        
         if (entry.getId() == null) {
-            entry.setId(nextId++);
+            em.persist(entry);
+        } else {
+            em.merge(entry); 
         }
-        category.put(entry.getId(), entry);
+ 
+        tx.commit();
     }
 
     private void ensureTestData () {
-        if (findAll().isEmpty()) {
+        List<Category> findAll = findAll();
+        if (findAll.isEmpty()) {
             final String[] categoryData = new String[] { "Hotel", "Hostel", "GuestHouse", "Appartments" };
 
             for (String category : categoryData) {
-                Category cat = new Category(category);
-                save(cat);
+                save (new Category(category));
             }
         }
     }
