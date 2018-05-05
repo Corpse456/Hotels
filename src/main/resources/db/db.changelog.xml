@@ -6,7 +6,7 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-	<changeSet author="neznaev" id="init">
+	<changeSet author="AlexNeznaev" id="init">
 		<!-- ================================= Hotels ================================= -->
 		<createTable tableName="HOTEL">
 			<column autoIncrement="true" name="ID" type="BIGINT">
@@ -32,13 +32,13 @@
 		</createTable>
 	</changeSet>
 
-	<changeSet author="neznaev" id="initCategory">
+	<changeSet author="AlexNeznaev" id="initCategory">
 		<!-- ================================= Category ================================= -->
 		<createTable tableName="CATEGORY">
 			<column autoIncrement="true" name="ID" type="BIGINT">
 				<constraints primaryKey="true" />
 			</column>
-			<column name="OPTLOCK" type="BIGINT" />
+			<column name="OPTLOCK" type="BIGINT" defaultValue="0" />
 			<column name="NAME" type="VARCHAR(255)">
 				<constraints nullable="false" />
 			</column>
@@ -49,7 +49,7 @@
 		</rollback>
 	</changeSet>
 
-	<changeSet author="neznaev" id="addDescription">
+	<changeSet author="AlexNeznaev" id="addDescription">
 		<addColumn tableName="HOTEL">
 			<column name="DESCRIPTION" type="varchar(255)" />
 		</addColumn>
@@ -59,7 +59,7 @@
 		</rollback>
 	</changeSet>
 
-	<changeSet author="neznaev" id="addNotNullToName">
+	<changeSet author="AlexNeznaev" id="addNotNullToName">
 		<addNotNullConstraint
 			columnDataType="VARCHAR(255)" columnName="NAME" tableName="HOTEL" />
 
@@ -69,7 +69,7 @@
 		</rollback>
 	</changeSet>
 
-	<changeSet author="neznaev" id="renameCategory">
+	<changeSet author="AlexNeznaev" id="renameCategory">
 		<renameColumn columnDataType="VARCHAR(255)"
 			newColumnName="CATEGORY_ID" oldColumnName="CATEGORY"
 			tableName="HOTEL" />
@@ -81,7 +81,7 @@
 		</rollback>
 	</changeSet>
 
-	<changeSet author="neznaev" id="categoryUpdate">
+	<changeSet author="AlexNeznaev" id="categoryUpdate">
 		<modifyDataType tableName="HOTEL"
 			columnName="CATEGORY_ID" newDataType="BIGINT" />
 
@@ -91,7 +91,7 @@
 		</rollback>
 	</changeSet>
 
-	<changeSet author="neznaev" id="addDefaultValueCategory">
+	<changeSet author="AlexNeznaev" id="addDefaultValueCategory">
 		<addDefaultValue columnDataType="VARCHAR(255)"
 			columnName="CATEGORY_ID" defaultValue="0" tableName="HOTEL" />
 
@@ -101,7 +101,7 @@
 		</rollback>
 	</changeSet>
 
-	<changeSet author="neznaev"
+	<changeSet author="AlexNeznaev"
 		id="addForeignKeyConstraint-category">
 		<addForeignKeyConstraint
 			baseColumnNames="CATEGORY_ID" baseTableName="HOTEL"
@@ -113,8 +113,18 @@
 				baseTableName="HOTEL" constraintName="fk_category_id" />
 		</rollback>
 	</changeSet>
- 
-	<changeSet author="neznaev" id="insertHotel">
+
+	<changeSet author="AlexNeznaev" id="addDefaultValue">
+		<addDefaultValue columnDataType="BIGINT" columnName="OPTLOCK"
+			defaultValue="0" tableName="HOTEL" />
+			
+		<rollback>
+			<dropDefaultValue columnDataType="BIGINT" columnName="OPTLOCK"
+            tableName="HOTEL"/>
+		</rollback>
+	</changeSet>
+
+	<changeSet author="AlexNeznaev" id="insertHotel">
 		<insert tableName="CATEGORY">
 			<column name="NAME" type="varchar(255)">Hotel</column>
 		</insert>
@@ -126,7 +136,7 @@
 		</rollback>
 	</changeSet>
 
-	<changeSet author="neznaev" id="insertHostel">
+	<changeSet author="AlexNeznaev" id="insertHostel">
 		<insert tableName="CATEGORY">
 			<column name="NAME" type="varchar(255)">Hostel</column>
 		</insert>
@@ -138,7 +148,7 @@
 		</rollback>
 	</changeSet>
 
-	<changeSet author="neznaev" id="insertGuestHouse">
+	<changeSet author="AlexNeznaev" id="insertGuestHouse">
 		<insert tableName="CATEGORY">
 			<column name="NAME" type="varchar(255)">GuestHouse</column>
 		</insert>
@@ -150,7 +160,7 @@
 		</rollback>
 	</changeSet>
 
-	<changeSet author="neznaev" id="insertAppartment">
+	<changeSet author="AlexNeznaev" id="insertAppartment">
 		<insert tableName="CATEGORY">
 			<column name="NAME" type="varchar(255)">Appartments</column>
 		</insert>
@@ -162,18 +172,20 @@
 		</rollback>
 	</changeSet>
 
-	<changeSet author="neznaev" id="insertFirstHotel">
+	<changeSet author="AlexNeznaev" id="insertFirstHotel">
 		<insert tableName="HOTEL">
 			<column name="CATEGORY_ID"
 				valueComputed="(SELECT ID FROM CATEGORY WHERE NAME = 'Hotel')" />
 			<column name="NAME">Phakchai Hotel</column>
-			<column name="ADDRESS">137 Ban Wattay Mueng Sikothabong Vientiane Laos, 01000 Vientiane, Laos</column>
+			<column name="ADDRESS">137 Ban Wattay Mueng Sikothabong Vientiane Laos,
+				01000 Vientiane, Laos</column>
 			<column name="RATING">2</column>
 			<column name="OPERATES_FROM">8816</column>
-			<column name="URL">https://www.booking.com/hotel/la/phakchai.en-gb.html</column>
+			<column name="URL">https://www.booking.com/hotel/la/phakchai.en-gb.html
+			</column>
 			<column name="DESCRIPTION">First</column>
 		</insert>
-		
+
 		<rollback>
 			<delete tableName="HOTEL">
 				<where>NAME = 'Phakchai Hotel'</where>
@@ -181,18 +193,20 @@
 		</rollback>
 	</changeSet>
 
-	<changeSet author="neznaev" id="insertSecondHotel">
+	<changeSet author="AlexNeznaev" id="insertSecondHotel">
 		<insert tableName="HOTEL">
 			<column name="CATEGORY_ID"
 				valueComputed="(SELECT ID FROM CATEGORY WHERE NAME = 'Hostel')" />
 			<column name="NAME">Phetmeuangsam Hotel</column>
-			<column name="ADDRESS">Ban Phanhxai, Xumnuea, Xam Nua, 01000 Xam Nua, Laos</column>
+			<column name="ADDRESS">Ban Phanhxai, Xumnuea, Xam Nua, 01000 Xam Nua,
+				Laos</column>
 			<column name="RATING">3</column>
 			<column name="OPERATES_FROM">14812</column>
-			<column name="URL">https://www.booking.com/hotel/la/phetmisay.en-gb.html</column>
+			<column name="URL">https://www.booking.com/hotel/la/phetmisay.en-gb.html
+			</column>
 			<column name="DESCRIPTION">Second</column>
 		</insert>
-		
+
 		<rollback>
 			<delete tableName="HOTEL">
 				<where>NAME = 'Phetmeuangsam Hotel'</where>
@@ -200,18 +214,20 @@
 		</rollback>
 	</changeSet>
 
-	<changeSet author="neznaev" id="insertThirdHotel">
+	<changeSet author="AlexNeznaev" id="insertThirdHotel">
 		<insert tableName="HOTEL">
 			<column name="CATEGORY_ID"
 				valueComputed="(SELECT ID FROM CATEGORY WHERE NAME = 'Appartments')" />
 			<column name="NAME">Pakse Mekong Hotel</column>
-			<column name="ADDRESS">No 062 Khemkong Road, Pakse District, Champasak, Laos, 01000 Pakse, Laos</column>
+			<column name="ADDRESS">No 062 Khemkong Road, Pakse District, Champasak,
+				Laos, 01000 Pakse, Laos</column>
 			<column name="RATING">4</column>
 			<column name="OPERATES_FROM">16539</column>
-			<column name="URL">https://www.booking.com/hotel/la/pakse-mekong.en-gb.html</column>
+			<column name="URL">https://www.booking.com/hotel/la/pakse-mekong.en-gb.html
+			</column>
 			<column name="DESCRIPTION">Third</column>
 		</insert>
-		
+
 		<rollback>
 			<delete tableName="HOTEL">
 				<where>NAME = 'Pakse Mekong Hotel'</where>
@@ -219,18 +235,20 @@
 		</rollback>
 	</changeSet>
 
-	<changeSet author="neznaev" id="insertFourthHotel">
+	<changeSet author="AlexNeznaev" id="insertFourthHotel">
 		<insert tableName="HOTEL">
 			<column name="CATEGORY_ID"
 				valueComputed="(SELECT ID FROM CATEGORY WHERE NAME = 'GuestHouse')" />
 			<column name="NAME">Niraxay Apartment</column>
-			<column name="ADDRESS">Samsenthai Road Ban Sihom , 01000 Vientiane, Laos</column>
+			<column name="ADDRESS">Samsenthai Road Ban Sihom , 01000 Vientiane, Laos
+			</column>
 			<column name="RATING">5</column>
 			<column name="OPERATES_FROM">7317</column>
-			<column name="URL">https://www.booking.com/hotel/la/niraxay-apartment.en-gb.html</column>
+			<column name="URL">https://www.booking.com/hotel/la/niraxay-apartment.en-gb.html
+			</column>
 			<column name="DESCRIPTION">Fourth</column>
 		</insert>
-		
+
 		<rollback>
 			<delete tableName="HOTEL">
 				<where>NAME = 'Niraxay Apartment'</where>
