@@ -2,14 +2,14 @@ package hotels.holelsUI;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 
 import hotels.categoryUI.Category;
 import hotels.categoryUI.CategoryService;
@@ -17,15 +17,14 @@ import hotels.categoryUI.CategoryService;
 public class HotelService {
 
     private static HotelService instance;
-    private static final Logger LOGGER = Logger.getLogger(HotelService.class.getName());
+    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("demo_hotels");
+    private EntityManager em = emf.createEntityManager();
     private CategoryService categoryService = CategoryService.getInstance();
-    private final HashMap<Long, Hotel> hotels = new HashMap<>();
-    private long nextId = 0;
 
-    private HotelService() {
+    private HotelService () {
     }
 
-    public static HotelService getInstance() {
+    public static HotelService getInstance () {
         if (instance == null) {
             instance = new HotelService();
             instance.ensureTestData();
@@ -33,65 +32,45 @@ public class HotelService {
         return instance;
     }
 
-    public synchronized List<Hotel> findAll() {
-        return findAll(null, null);
-    }
-    
-    public synchronized List<Hotel> findAll(String name, String address) {
-	ArrayList<Hotel> arrayList = new ArrayList<>();
-        for (Hotel hotel : hotels.values()) {
-            try {
-                boolean passesFilter = filter(hotel, name, address);
-                if (passesFilter) {
-                    arrayList.add(hotel.clone());
-                }
-            } catch (CloneNotSupportedException ex) {
-                Logger.getLogger(HotelService.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        Collections.sort(arrayList, Comparator.comparing(Hotel::getId));
-        return arrayList;
+    public synchronized List<Hotel> findAll () {
+        return em.createQuery("SELECT e from Hotel e", Hotel.class).getResultList();
     }
 
-    private boolean filter(Hotel hotel, String name, String address) {
-	boolean nameFilter = contains(hotel.getName(), name);
-	boolean addressFilter = contains(hotel.getAddress(), address);
-	
-	return nameFilter && addressFilter;
+    public synchronized List<Hotel> findAll (String name, String address) {
+        TypedQuery<Hotel> namedQuery = em.createNamedQuery("Hotel.byFilter", Hotel.class);
+        namedQuery.setParameter("namefilter", "%" + name + "%");
+        namedQuery.setParameter("addressfilter", "%" + address + "%");
+        return namedQuery.getResultList();
     }
 
-    private boolean contains (String hotelField, String value) {
-        return (value == null || value.isEmpty())
-                || hotelField.toLowerCase().contains(value.toLowerCase());
+    public synchronized long count () {
+        return findAll().size();
     }
 
-    public synchronized long count() {
-        return hotels.size();
+    public synchronized void delete (Hotel value) {
+        EntityTransaction tx = em.getTransaction();
+        value = em.find(Hotel.class, value.getId());
+        tx.begin();
+        em.remove(value);
+        tx.commit();
     }
 
-    public synchronized void delete(Hotel value) {
-        hotels.remove(value.getId());
-    }
-
-    public synchronized void save(Hotel entry) {
-        if (entry == null) {
-            LOGGER.log(Level.SEVERE, "Hotel is null.");
-            return;
-        }
+    public synchronized void save (Hotel entry) {
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        
         if (entry.getId() == null) {
-            entry.setId(nextId++);
+            em.persist(entry);
+        } else {
+            em.merge(entry);
         }
-        try {
-            entry = (Hotel) entry.clone();
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-        hotels.put(entry.getId(), entry);
+ 
+        tx.commit();
     }
 
-    public void ensureTestData() {
+    public void ensureTestData () {
         if (findAll().isEmpty()) {
-            
+
             final String[] hotelData = new String[] {
                     "3 Nagas Luang Prabang - MGallery by Sofitel;4;https://www.booking.com/hotel/la/3-nagas-luang-prabang-by-accor.en-gb.html;Vat Nong Village, Sakkaline Road, Democratic Republic Lao, 06000 Luang Prabang, Laos;",
                     "Abby Boutique Guesthouse;1;https://www.booking.com/hotel/la/abby-boutique-guesthouse.en-gb.html;Ban Sawang , 01000 Vang Vieng, Laos",

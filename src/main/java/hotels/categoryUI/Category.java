@@ -6,14 +6,22 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "CATEGORY")
 @SuppressWarnings("serial")
+@NamedQueries({
+    @NamedQuery(name = "Category.byName", query = "SELECT e FROM Category e WHERE LOWER(e.name) LIKE :filter")
+})
 public class Category implements Serializable, Cloneable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
     private String name;
 
     public boolean isPersisted() {

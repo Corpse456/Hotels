@@ -124,7 +124,7 @@ public class HotelView extends VerticalLayout implements View {
         grid.addColumn(Hotel::getName).setCaption("Name");
         grid.addColumn(Hotel::getAddress).setCaption("Address");
         grid.addColumn(Hotel::getRating).setCaption("Rating");
-        grid.addColumn(hotel -> hotel.getCategory().getId() != null ? hotel.getCategory().getName() : "No category")
+        grid.addColumn(hotel -> hotel.getCategory() != null ? hotel.getCategory().getName() : "No category")
                 .setCaption("Category");
         grid.addColumn(hotel -> LocalDate.ofEpochDay(hotel.getOperatesFrom())).setCaption("Operates from");
         grid.addColumn(Hotel::getDescription).setCaption("Description");

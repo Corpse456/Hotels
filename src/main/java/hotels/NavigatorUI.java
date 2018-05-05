@@ -1,23 +1,42 @@
 package hotels;
 
+import javax.servlet.annotation.WebListener;
 import javax.servlet.annotation.WebServlet;
 
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.context.ContextLoaderListener;
+
+import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.spring.annotation.EnableVaadin;
+import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.MenuBar;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 import hotels.categoryUI.CategoryView;
 import hotels.holelsUI.HotelView;
 
+@Theme("mytheme")
+@SpringUI
 public class NavigatorUI extends UI {
+    
+    @WebListener
+    public static class MyContextLoaderListener extends ContextLoaderListener {
+    }
+
+    @Configuration
+    @EnableVaadin
+    public static class MyConfiguration {
+    }
+    
     private static final long serialVersionUID = -4705632432578039781L;
     private static final String HOTEL_VIEW = "Hotel";
     private static final String CATEGORY_VIEW = "Category";
@@ -28,10 +47,6 @@ public class NavigatorUI extends UI {
     private final MenuBar menu = new MenuBar();
     private final VerticalLayout layout = new VerticalLayout();
     
-    public Navigator getNavigator () {
-        return navigator;
-    }
-
     @Override
     protected void init (VaadinRequest request) {
         menuCreating();
@@ -39,8 +54,8 @@ public class NavigatorUI extends UI {
         layout.addComponents(menu, panel);
         setContent(layout);
         
-        navigator.addView(HOTEL_VIEW, new HotelView());
         navigator.addView(CATEGORY_VIEW, new CategoryView());
+        navigator.addView(HOTEL_VIEW, new HotelView());
     }
     
     @SuppressWarnings("serial")

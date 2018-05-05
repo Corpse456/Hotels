@@ -105,7 +105,7 @@ public class CategoryView extends VerticalLayout implements View {
     
     private void notification (Set<Category> set, Category delCandidate) {
         if (set.size() > 1) Notification.show(set.size() + " categories deleted", Type.TRAY_NOTIFICATION);
-        else Notification.show("Hotel " + delCandidate.getName() + " deleted", Type.TRAY_NOTIFICATION);
+        else Notification.show("Category " + delCandidate.getName() + " deleted", Type.TRAY_NOTIFICATION);
     }
     
     public void updateList () {

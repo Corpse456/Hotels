@@ -9,10 +9,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 import hotels.categoryUI.Category;
 
 @Entity
+@Table(name = "HOTEL")
+@NamedQueries({
+        @NamedQuery(name = "Hotel.byFilter", query = "SELECT e FROM Hotel AS e " +
+                "WHERE LOWER(e.name) LIKE :namefilter AND LOWER(e.address) LIKE :addressfilter")
+})
 @SuppressWarnings ("serial")
 public class Hotel implements Serializable, Cloneable {
     @Id
