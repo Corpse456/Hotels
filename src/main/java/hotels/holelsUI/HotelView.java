@@ -1,6 +1,7 @@
 package hotels.holelsUI;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -16,8 +17,10 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.PopupView;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.HtmlRenderer;
@@ -42,10 +45,13 @@ public class HotelView extends VerticalLayout implements View {
     private final Button addHotel = new Button("Add hotel");
     private final Button deleteHotel = new Button("Delete hotel");
     private final Button editHotel = new Button("Edit hotel");
+    private final Button bulkUpdate = new Button("Bulk update");
     private final HotelEditForm form = new HotelEditForm(this);
     private final Label status = new Label();
     private final HorizontalLayout controls = new HorizontalLayout();
     private final HorizontalLayout content = new HorizontalLayout();
+    private final VerticalLayout popupContent = new VerticalLayout();
+    private final PopupView popup = new PopupView(null, popupContent);
 
     @Override
     public void enter (ViewChangeEvent event) {
@@ -62,9 +68,10 @@ public class HotelView extends VerticalLayout implements View {
 
         addHotel.addClickListener(e -> form.setHotel(new Hotel()));
 
-        deleteSetUp();
-        editSetUp();
-        controls.addComponents(nameFilter, addressFilter, addHotel, deleteHotel, editHotel);
+        deleteSetup();
+        editSetup();
+        bulkSetup();
+        controls.addComponents(nameFilter, addressFilter, addHotel, deleteHotel, editHotel, bulkUpdate, popup);
 
         contentSetUp();
         statusSetUp();
@@ -75,7 +82,52 @@ public class HotelView extends VerticalLayout implements View {
         Notification.show("Welcome to our website", Type.TRAY_NOTIFICATION);
     }
 
-    private void editSetUp () {
+    private void bulkSetup () {
+        Label title = new Label("Bulk update");
+        
+        TextField fieldValue = new TextField();
+        fieldValue.setPlaceholder("Field value");
+        
+        NativeSelect<String> selection = new NativeSelect<>();
+        selection.setItems(fieldNames());
+        selection.setEmptySelectionCaption("Please select field");
+        selection.setValue(selection.getEmptySelectionCaption());
+        selection.addSelectionListener(event -> {
+           String current = event.getValue();
+           fieldValue.setPlaceholder(current);
+        });
+        
+        
+        HorizontalLayout buttons = new HorizontalLayout();
+        Button update = new Button("Update");
+        Button cancel = new Button("Cancel", click -> popup.setPopupVisible(false));
+        buttons.addComponents(update, cancel);
+        
+        popupContent.addComponents(title, selection, fieldValue, buttons);
+        
+        popup.setHideOnMouseOut(false);
+        
+        bulkUpdate.setEnabled(false);
+        bulkUpdate.addClickListener(e -> {
+            popup.setPopupVisible(true);
+        });
+    }
+
+    private List<String> fieldNames () {
+        ArrayList<String> fields = new ArrayList<>();
+        
+        fields.add("Name");
+        fields.add("Address");
+        fields.add("Rating");
+        fields.add("Date");
+        fields.add("Category");
+        fields.add("Description");
+        fields.add("Url");
+        
+        return fields;
+    }
+
+    private void editSetup () {
         editHotel.setEnabled(false);
         editHotel.addClickListener(e -> {
             Hotel editCandidate = grid.getSelectedItems().iterator().next();
@@ -91,7 +143,7 @@ public class HotelView extends VerticalLayout implements View {
         content.setComponentAlignment(form, Alignment.MIDDLE_CENTER);
     }
 
-    private void deleteSetUp () {
+    private void deleteSetup () {
         deleteHotel.setEnabled(false);
 
         deleteHotel.addClickListener(e -> {
@@ -136,15 +188,24 @@ public class HotelView extends VerticalLayout implements View {
         return e -> {
             Set<Hotel> value = e.getValue();
 
-            if (value.size() == 0) deleteHotel.setEnabled(false);
-            else deleteHotel.setEnabled(true);
-            
-            if (value.size() == 1) editHotel.setEnabled(true);
-            
-            if (value.size() != 1) {
-                editHotel.setEnabled(false);
+            if (value.size() == 0) {
+                deleteHotel.setEnabled(false);
                 form.setVisible(false);
+                bulkUpdate.setEnabled(false);
+                editHotel.setEnabled(false);
             }
+            
+            if (value.size() == 1) {
+                editHotel.setEnabled(true);
+                deleteHotel.setEnabled(true);
+                bulkUpdate.setEnabled(false);
+            }
+            
+            if (value.size() > 1) {
+                editHotel.setEnabled(false);
+                bulkUpdate.setEnabled(true);
+                form.setVisible(false);
+            } 
         };
     }
 
