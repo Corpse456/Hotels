@@ -1,7 +1,6 @@
 package hotels.holelsUI;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -17,7 +16,6 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.PopupView;
@@ -50,8 +48,7 @@ public class HotelView extends VerticalLayout implements View {
     private final Label status = new Label();
     private final HorizontalLayout controls = new HorizontalLayout();
     private final HorizontalLayout content = new HorizontalLayout();
-    private final VerticalLayout popupContent = new VerticalLayout();
-    private final PopupView popup = new PopupView(null, popupContent);
+    private final PopupView popup = new HotelPopup(new VerticalLayout());
 
     @Override
     public void enter (ViewChangeEvent event) {
@@ -82,49 +79,13 @@ public class HotelView extends VerticalLayout implements View {
         Notification.show("Welcome to our website", Type.TRAY_NOTIFICATION);
     }
 
+    
+
     private void bulkSetup () {
-        Label title = new Label("Bulk update");
-        
-        TextField fieldValue = new TextField();
-        fieldValue.setPlaceholder("Field value");
-        
-        NativeSelect<String> selection = new NativeSelect<>();
-        selection.setItems(fieldNames());
-        selection.setEmptySelectionCaption("Please select field");
-        selection.setValue(selection.getEmptySelectionCaption());
-        selection.addSelectionListener(event -> {
-           String current = event.getValue();
-           fieldValue.setPlaceholder(current);
-        });
-        
-        
-        HorizontalLayout buttons = new HorizontalLayout();
-        Button update = new Button("Update");
-        Button cancel = new Button("Cancel", click -> popup.setPopupVisible(false));
-        buttons.addComponents(update, cancel);
-        
-        popupContent.addComponents(title, selection, fieldValue, buttons);
-        
-        popup.setHideOnMouseOut(false);
-        
         bulkUpdate.setEnabled(false);
         bulkUpdate.addClickListener(e -> {
             popup.setPopupVisible(true);
         });
-    }
-
-    private List<String> fieldNames () {
-        ArrayList<String> fields = new ArrayList<>();
-        
-        fields.add("Name");
-        fields.add("Address");
-        fields.add("Rating");
-        fields.add("Date");
-        fields.add("Category");
-        fields.add("Description");
-        fields.add("Url");
-        
-        return fields;
     }
 
     private void editSetup () {
