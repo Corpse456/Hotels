@@ -34,13 +34,13 @@ public class HotelEditForm extends FormLayout {
     private CategoryService categoryService = CategoryService.getInstance();
     private Hotel hotel;
     private Binder<Hotel> binder = new Binder<>(Hotel.class);
-    private TextField name = new TextField("Name");
-    private TextField address = new TextField("Address");
-    private TextField rating = new TextField("Rating");
-    private DateField operatesFrom = new DateField("Date");
-    private NativeSelect<String> category = new NativeSelect<>("Category");
-    private TextArea description = new TextArea("Description");
-    private TextField url = new TextField("URL");
+    private TextField name = new TextField(HotelFieldNames.Name.toString());
+    private TextField address = new TextField(HotelFieldNames.Address.toString());
+    private TextField rating = new TextField(HotelFieldNames.Rating.toString());
+    private DateField operatesFrom = new DateField(HotelFieldNames.OperatesFrom.toString());
+    private NativeSelect<String> category = new NativeSelect<>(HotelFieldNames.Category.toString());
+    private TextArea description = new TextArea(HotelFieldNames.Description.toString());
+    private TextField url = new TextField(HotelFieldNames.URL.toString());
 
     private Button save = new Button("Save");
     private Button close = new Button("Close");

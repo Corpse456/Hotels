@@ -18,7 +18,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.PopupView;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.HtmlRenderer;
@@ -48,7 +47,7 @@ public class HotelView extends VerticalLayout implements View {
     private final Label status = new Label();
     private final HorizontalLayout controls = new HorizontalLayout();
     private final HorizontalLayout content = new HorizontalLayout();
-    private final PopupView popup = new HotelPopup(new VerticalLayout());
+    private final HotelPopup popup = new HotelPopup(this, new VerticalLayout());
 
     @Override
     public void enter (ViewChangeEvent event) {
@@ -72,8 +71,9 @@ public class HotelView extends VerticalLayout implements View {
 
         contentSetUp();
         statusSetUp();
-        addComponents(status, controls, content);
+        addComponents(status, controls, popup, content);
 
+        setComponentAlignment(popup, Alignment.MIDDLE_CENTER);
         updateList();
 
         Notification.show("Welcome to our website", Type.TRAY_NOTIFICATION);
@@ -85,6 +85,7 @@ public class HotelView extends VerticalLayout implements View {
         bulkUpdate.setEnabled(false);
         bulkUpdate.addClickListener(e -> {
             popup.setPopupVisible(true);
+            popup.setHotelList(grid.getSelectedItems());
         });
     }
 
@@ -134,15 +135,15 @@ public class HotelView extends VerticalLayout implements View {
     }
 
     private void gridAddColumns () {
-        grid.addColumn(Hotel::getName).setCaption("Name");
-        grid.addColumn(Hotel::getAddress).setCaption("Address");
-        grid.addColumn(Hotel::getRating).setCaption("Rating");
+        grid.addColumn(Hotel::getName).setCaption(HotelFieldNames.Name.toString());
+        grid.addColumn(Hotel::getAddress).setCaption(HotelFieldNames.Address.toString());
+        grid.addColumn(Hotel::getRating).setCaption(HotelFieldNames.Rating.toString());
         grid.addColumn(hotel -> hotel.getCategory() != null ? hotel.getCategory().getName() : "No category")
-                .setCaption("Category");
-        grid.addColumn(hotel -> LocalDate.ofEpochDay(hotel.getOperatesFrom())).setCaption("Operates from");
-        grid.addColumn(Hotel::getDescription).setCaption("Description");
+                .setCaption(HotelFieldNames.Category.toString());
+        grid.addColumn(hotel -> LocalDate.ofEpochDay(hotel.getOperatesFrom())).setCaption(HotelFieldNames.OperatesFrom.toString());
+        grid.addColumn(Hotel::getDescription).setCaption(HotelFieldNames.Description.toString());
         grid.addColumn(hotel -> "<a href=\"" + hotel.getUrl() + "\" target=\"_blank\">hotel info</a>",
-                new HtmlRenderer()).setCaption("URL");
+                new HtmlRenderer()).setCaption(HotelFieldNames.URL.toString());
     }
 
     private MultiSelectionListener<Hotel> listener () {
@@ -151,22 +152,22 @@ public class HotelView extends VerticalLayout implements View {
 
             if (value.size() == 0) {
                 deleteHotel.setEnabled(false);
-                form.setVisible(false);
-                bulkUpdate.setEnabled(false);
-                editHotel.setEnabled(false);
+            } else {
+                deleteHotel.setEnabled(true);
             }
             
             if (value.size() == 1) {
                 editHotel.setEnabled(true);
-                deleteHotel.setEnabled(true);
-                bulkUpdate.setEnabled(false);
+            } else {
+                form.setVisible(false);
+                editHotel.setEnabled(false);
             }
             
             if (value.size() > 1) {
-                editHotel.setEnabled(false);
                 bulkUpdate.setEnabled(true);
-                form.setVisible(false);
-            } 
+            } else {
+                bulkUpdate.setEnabled(false);
+            }
         };
     }
 
