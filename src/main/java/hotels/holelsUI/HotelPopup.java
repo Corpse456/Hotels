@@ -26,6 +26,7 @@ import hotels.categoryUI.CategoryService;
 @SuppressWarnings ("serial")
 public class HotelPopup extends PopupView {
 
+    private final String defaultSelectText = "Please select field";
     private final VerticalLayout popupContent;
     private final Label title = new Label("Bulk update");
     private final TextField fieldValue = new TextField();
@@ -126,7 +127,7 @@ public class HotelPopup extends PopupView {
 
     private void cancelSetup () {
         cancel.addClickListener(click -> {
-            selection.setValue(selection.getEmptySelectionCaption());
+            selection.setSelectedItem(selection.getEmptySelectionCaption());
             fields.removeAllComponents();
             currentSelectedField = null;
             fieldValue.clear();
@@ -138,7 +139,7 @@ public class HotelPopup extends PopupView {
 
     private void selectionSetup () {
         selection.setItems(Stream.of(HotelFieldNames.values()).map(Enum::name).collect(Collectors.toList()));
-        selection.setEmptySelectionCaption("Please select field");
+        selection.setEmptySelectionCaption(defaultSelectText);
         selection.setValue(selection.getEmptySelectionCaption());
         selection.addSelectionListener(event -> {
             fields.removeAllComponents();
@@ -149,12 +150,15 @@ public class HotelPopup extends PopupView {
             } else if (HotelFieldNames.OperatesFrom.toString().equals(currentSelectedField)) {
                 fields.addComponent(operatesFrom);
                 dateChangeListener();
+                operatesFrom.setDescription(HotelFieldDescription.getDescription(HotelFieldNames.OperatesFrom));
             } else if (HotelFieldNames.Category.toString().equals(currentSelectedField)) {
                 categoryAdd();
-                categoryChangeListener(categorySelect.getSelectedItem());
             } else {
                 fields.addComponent(fieldValue);
                 textValueChangeListener();
+                if (currentSelectedField != null && !defaultSelectText.equals(currentSelectedField)) {
+                    fieldValue.setDescription(HotelFieldDescription.getDescription(HotelFieldNames.valueOf(currentSelectedField)));
+                }
             }
         });
     }
@@ -162,6 +166,8 @@ public class HotelPopup extends PopupView {
     private void categoryAdd () {
         categorySelect.setItems(categoryNames());
         fields.addComponent(categorySelect);
+        categoryChangeListener(categorySelect.getSelectedItem());
+        categorySelect.setDescription(HotelFieldDescription.getDescription(HotelFieldNames.Category));
     }
 
     private void updateSetup () {
