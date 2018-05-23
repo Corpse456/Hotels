@@ -41,6 +41,7 @@ public class HotelEditForm extends FormLayout {
     private NativeSelect<String> category = new NativeSelect<>(HotelFieldNames.Category.toString());
     private TextArea description = new TextArea(HotelFieldNames.Description.toString());
     private TextField url = new TextField(HotelFieldNames.URL.toString());
+    private FreeServiceField freeService = new FreeServiceField("Free services");
 
     private Button save = new Button("Save");
     private Button close = new Button("Close");
@@ -60,7 +61,7 @@ public class HotelEditForm extends FormLayout {
 
         category.setItems(categoryNames());
 
-        addComponents(name, address, rating, operatesFrom, category, description, url, buttons);
+        addComponents(name, address, rating, operatesFrom, category, freeService, description, url, buttons);
         binder.bindInstanceFields(this);
     }
 
@@ -95,6 +96,7 @@ public class HotelEditForm extends FormLayout {
         binder.forField(category).asRequired(required + "category").withConverter(categoryConverter()).bind(Hotel::getCategory, Hotel::setCategory);
         binder.forField(description).bind(Hotel::getDescription, Hotel::setDescription);
         binder.forField(url).asRequired(required + "url").bind(Hotel::getUrl, Hotel::setUrl);
+        binder.forField(freeService).bind(Hotel::getFreeServices, Hotel::setFreeServices);
 
         setToolTips();
     }

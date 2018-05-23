@@ -10,6 +10,7 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.Navigator;
+import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.spring.annotation.EnableVaadin;
@@ -56,6 +57,8 @@ public class NavigatorUI extends UI {
         navigator.addView(HOTEL_VIEW, new HotelView());
 
         menuCreating();
+        
+        Page.getCurrent().setTitle("Hotels");
     }
 
     @SuppressWarnings ("serial")

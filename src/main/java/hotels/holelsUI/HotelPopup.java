@@ -173,24 +173,24 @@ public class HotelPopup extends PopupView {
     private void updateSetup () {
         update.addClickListener(click -> {            
             if (HotelFieldNames.OperatesFrom.toString().equals(currentSelectedField)) {
-                textFieldChange("operatesFrom", operatesFrom.getValue().getLong(ChronoField.EPOCH_DAY));
+                hotelFiledChange("operatesFrom", operatesFrom.getValue().getLong(ChronoField.EPOCH_DAY));
             } else if (HotelFieldNames.Category.toString().equals(currentSelectedField)) {
                 String categoryName = categorySelect.getValue();
                 List<Category> categories = categoryService.findAll();
                 categories.forEach(category -> {
                     if (category.getName().equals(categoryName)) {
-                        textFieldChange(currentSelectedField.toLowerCase(), category);
+                        hotelFiledChange(currentSelectedField.toLowerCase(), category);
                     }
                 });
             } else {
-                textFieldChange(currentSelectedField.toLowerCase(), fieldValue.getValue());
+                hotelFiledChange(currentSelectedField.toLowerCase(), fieldValue.getValue());
             }
             cancel.click();
             ui.updateList();
         });
     }
 
-    private void textFieldChange (String fieldName, Object value) {
+    private void hotelFiledChange (String fieldName, Object value) {
         Iterator<Hotel> iterator = hotelList.iterator();
         while (iterator.hasNext()) {
             Hotel editable = iterator.next();

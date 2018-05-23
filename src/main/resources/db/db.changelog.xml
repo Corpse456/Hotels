@@ -124,6 +124,20 @@
 		</rollback>
 	</changeSet>
 
+	<changeSet author="AlexNeznaev" id="services">
+		<addColumn tableName="HOTEL">
+			<column name="BREAKFAST" type="BIT(1) NOT NULL DEFAULT 0" />
+			<column name="TOWELS" type="BIT(1) NOT NULL DEFAULT 0" />
+			<column name="COLD_SPIRITS" type="BIT(1) NOT NULL DEFAULT 0" />
+		</addColumn>
+
+		<rollback>
+			<dropColumn tableName="HOTEL" columnName="BREAKFAST" />
+			<dropColumn tableName="HOTEL" columnName="TOWELS" />
+			<dropColumn tableName="HOTEL" columnName="COLD_SPIRITS" />
+		</rollback>
+	</changeSet>
+
 	<changeSet author="AlexNeznaev" id="insertHotel">
 		<insert tableName="CATEGORY">
 			<column name="NAME" type="varchar(255)">Hotel</column>
