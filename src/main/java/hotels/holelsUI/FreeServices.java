@@ -8,7 +8,7 @@ import javax.persistence.Embeddable;
 
 @SuppressWarnings ("serial")
 @Embeddable
-public class FreeServices implements Serializable{
+public class FreeServices implements Serializable {
     
     @Basic
     private Boolean breakfast = Boolean.FALSE;
@@ -52,6 +52,4 @@ public class FreeServices implements Serializable{
     public void setColdSpirits (Boolean coldSpirits) {
         this.coldSpirits = coldSpirits;
     }
-    
-    
 }

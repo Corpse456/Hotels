@@ -45,11 +45,14 @@ public class Hotel implements Serializable, Cloneable {
     private Long operatesFrom;
 
     @JoinColumn (name = "CATEGORY_ID", updatable = true)
-    @ManyToOne (cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.EAGER)
+    @ManyToOne (cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     private Category category;
     
     @Embedded
     private FreeServices freeServices;
+    
+    @Embedded
+    private PaymentMethod paymentMethod;
 
     private String url;
 
@@ -155,6 +158,14 @@ public class Hotel implements Serializable, Cloneable {
     
     public void setFreeServices (FreeServices freeServices) {
         this.freeServices = freeServices;
+    }
+    
+    public PaymentMethod getPaymentMethod () {
+        return paymentMethod;
+    }
+    
+    public void setPaymentMethod (PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 
     public Hotel (String name, String address, Integer rating, Long operatesFrom, Category category, String url,

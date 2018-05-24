@@ -106,6 +106,7 @@ public class HotelService {
                 h.setRating(Integer.parseInt(split[1]));
                 h.setUrl(split[2]);
                 h.setAddress(split[3]);
+                h.setFreeServices(freeServicesPrepare());
                 List<Category> allCategory = categoryService.findAll();
                 h.setCategory(allCategory.get((int) (Math.random() * allCategory.size())));
                 int daysOld = 0 - r.nextInt(365 * 30);
@@ -113,5 +114,13 @@ public class HotelService {
                 save(h);
             }
         }
+    }
+
+    private FreeServices freeServicesPrepare () {
+        FreeServices free = new FreeServices();
+        free.setBreakfast(Math.random() > 0.5 ? true : false);
+        free.setColdSpirits(Math.random() > 0.5 ? true : false);
+        free.setTowels(Math.random() > 0.5 ? true : false);
+        return free;
     }
 }
