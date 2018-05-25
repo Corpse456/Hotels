@@ -138,6 +138,18 @@
 		</rollback>
 	</changeSet>
 
+	<changeSet author="AlexNeznaev" id="payment">
+		<addColumn tableName="HOTEL">
+			<column name="CARD" type="INT NOT NULL DEFAULT 0" />
+			<column name="CASH" type="BIT(1) NOT NULL DEFAULT 0" />
+		</addColumn>
+
+		<rollback>
+			<dropColumn tableName="HOTEL" columnName="CARD" />
+			<dropColumn tableName="HOTEL" columnName="CASH" />
+		</rollback>
+	</changeSet>
+
 	<changeSet author="AlexNeznaev" id="insertHotel">
 		<insert tableName="CATEGORY">
 			<column name="NAME" type="varchar(255)">Hotel</column>
