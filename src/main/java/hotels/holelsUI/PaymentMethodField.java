@@ -51,6 +51,7 @@ public class PaymentMethodField extends CustomField<PaymentMethod> {
             if (CARD.equals(event.getValue())) {
                 layout.removeComponent(cashLabel);
                 layout.addComponent(depositField);
+                depositField.setValue(method.getCard() + "");
             } else {
                 layout.removeComponent(depositField);
                 layout.addComponent(cashLabel);
@@ -58,9 +59,22 @@ public class PaymentMethodField extends CustomField<PaymentMethod> {
             Notification.show("Value changed:", String.valueOf(event.getValue()), Type.TRAY_NOTIFICATION);
         };
     }
+    
+    private void updateValues () {
+        if (getValue() != null) {
+            if (method.getCash()) {
+                radiobutton.setSelectedItem(CASH);
+                layout.addComponent(cashLabel);
+            } else {
+                radiobutton.setSelectedItem(CARD);
+                layout.addComponent(depositField);
+            }
+        }
+    }
 
     @Override
     protected void doSetValue (PaymentMethod value) {
-        
+        method = new PaymentMethod(value);
+        updateValues();
     }
 }

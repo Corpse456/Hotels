@@ -24,6 +24,7 @@ public class FreeServices implements Serializable {
     
     public FreeServices (FreeServices value) {
         if (value == null) return;
+        
         this.breakfast = value.breakfast;
         this.towels = value.towels;
         this.coldSpirits = value.coldSpirits;

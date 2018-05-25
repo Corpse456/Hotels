@@ -18,11 +18,11 @@ public class PaymentMethod implements Serializable {
     public PaymentMethod () {
     }
 
-    public PaymentMethod (Integer card) {
-        this.card = card;
+    public PaymentMethod (PaymentMethod value) {
+        if (value == null) return;
         
-        if (card > 0) cash = false;
-        else cash = true;
+        card = value.getCard();
+        cash = value.getCash();
     }
 
     public Integer getCard () {
