@@ -27,8 +27,10 @@ public class CategoryEditForm extends FormLayout {
         
         binder.forField(name).asRequired("Please enter a name").bind(Category::getName, Category::setName);
         name.setDescription("Category name - String, not empty");
+        name.setId("CategoryName");
         
         buttons.addComponents(save, close);
+        save.setId("Save");
         save.addClickListener(e -> save());
         close.addClickListener(e -> close());
         

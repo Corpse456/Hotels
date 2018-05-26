@@ -46,15 +46,19 @@ public class CategoryView extends VerticalLayout implements View {
         filtersSetUp();
         deleteSetUp();
         editSetUp();
-        addCategory.addClickListener(e -> form.setCategory(new Category()));
+        addSetup();
         controls.addComponents(filter, addCategory, deleteCategory, editCategory);
         
         statusSetUp();
         addComponents(status, controls, content);
     }
+
+    private void addSetup () {
+        addCategory.addClickListener(e -> form.setCategory(new Category()));
+        addCategory.setId("Add");
+    }
     
     private void gridSetUp () {
-        
         grid.setSelectionMode(SelectionMode.MULTI);
         grid.asMultiSelect().addSelectionListener(listener());
         grid.addColumn(Category::getName).setCaption("Category List");

@@ -63,6 +63,7 @@ public class HotelView extends VerticalLayout implements View {
         filtersSetUp();
 
         addHotel.addClickListener(e -> form.setHotel(new Hotel()));
+        addHotel.setId("addHotel");
 
         deleteSetup();
         editSetup();
@@ -78,8 +79,6 @@ public class HotelView extends VerticalLayout implements View {
 
         Notification.show("Welcome to our website", Type.TRAY_NOTIFICATION);
     }
-
-    
 
     private void bulkSetup () {
         bulkUpdate.setEnabled(false);
@@ -131,6 +130,7 @@ public class HotelView extends VerticalLayout implements View {
         grid.asMultiSelect().addSelectionListener(listener());
         grid.setWidth(100, Unit.PERCENTAGE);
         grid.setHeight(650, Unit.PIXELS);
+        grid.setId("HotelGrid");
         gridAddColumns();
     }
 

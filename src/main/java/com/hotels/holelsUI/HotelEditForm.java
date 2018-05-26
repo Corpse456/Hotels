@@ -62,6 +62,20 @@ public class HotelEditForm extends FormLayout {
 
         addComponents(name, address, rating, operatesFrom, category, freeService, paymentMethod, description, url, buttons);
         binder.bindInstanceFields(this);
+        setIds();
+    }
+
+    private void setIds () {
+        name.setId(HotelFieldNames.Name.toString());
+        address.setId(HotelFieldNames.Address.toString());
+        rating.setId(HotelFieldNames.Rating.toString());
+        operatesFrom.setId(HotelFieldNames.OperatesFrom.toString());
+        category.setId(HotelFieldNames.Category.toString());
+        freeService.setId(HotelFieldNames.FreeServices.toString());
+        paymentMethod.setId(HotelFieldNames.PaymentMethod.toString());
+        description.setId(HotelFieldNames.Description.toString());
+        url.setId(HotelFieldNames.URL.toString());
+        save.setId("HotelSave");
     }
 
     private List<String> categoryNames () {

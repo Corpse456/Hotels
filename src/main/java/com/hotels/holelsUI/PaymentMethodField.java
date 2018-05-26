@@ -36,32 +36,57 @@ public class PaymentMethodField extends CustomField<PaymentMethod> {
     @Override
     protected Component initContent () {
         super.setCaption(caption);
-        layout.setWidth(100, Unit.PERCENTAGE);
-        layout.setMargin(false);
         
+        radiButtonSetup();
+        
+        method = new PaymentMethod();
+        
+        setWidth();
+        setIds();
+        
+        cashLabel.setVisible(false);
+        
+        prepaymentSetup();
+        
+        layoutSetup();
+        
+        updateValues();
+        
+        return layout;
+    }
+
+    private void setIds () {
+        radiobutton.setId("HotelRadioButton");
+        prepayment.setId("HotelPrepayment");
+    }
+
+    private void layoutSetup () {
+        layout.setMargin(false);
+        layout.addComponents(radiobutton, cashLabel, prepayment);
+    }
+
+    private void radiButtonSetup () {
         radiobutton.setItems(CARD, CASH);
+        radiobutton.setStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
+        radiobutton.setPrimaryStyleName(ValoTheme.OPTIONGROUP_SMALL);
+        radiobutton.addValueChangeListener(changeListener());
         radiobutton.setItemDescriptionGenerator((item) -> {
             if (item.equals(CARD)) return "Credit card deposit";
             else return "Cash payment";
         });;
-        radiobutton.setStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
-        radiobutton.setPrimaryStyleName(ValoTheme.OPTIONGROUP_SMALL);
-        radiobutton.addValueChangeListener(changeListener());
-        
-        method = new PaymentMethod();
-        
-        layout.addComponents(radiobutton, cashLabel, prepayment);
-        
+    }
+
+    private void setWidth () {
         radiobutton.setWidth(100, Unit.PERCENTAGE);
         cashLabel.setWidth(100, Unit.PERCENTAGE);
-        prepayment.setDescription("Prepayment on the card in percent");
         prepayment.setWidth(100, Unit.PERCENTAGE);
-        
+        layout.setWidth(100, Unit.PERCENTAGE);
+    }
+
+    private void prepaymentSetup () {
+        prepayment.setDescription("Prepayment on the card in percent");
         prepayment.setPlaceholder("Guaranty Deposit");
-        
-        cashLabel.setVisible(false);
         prepayment.setVisible(false);
-        
         //prepayment.setValueChangeMode(ValueChangeMode.LAZY);
         prepayment.addValueChangeListener(l -> {
             if (l.getValue() == null) return;
@@ -79,10 +104,6 @@ public class PaymentMethodField extends CustomField<PaymentMethod> {
                 oldValue = null;
             }
         });
-        
-        updateValues();
-        
-        return layout;
     }
 
     private ValueChangeListener<String> changeListener () {

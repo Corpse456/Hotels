@@ -42,6 +42,10 @@ public class FreeServiceField extends CustomField<FreeServices> {
         towels.addValueChangeListener(l -> value.setTowels(l.getValue()));
         spirits.addValueChangeListener(l -> value.setColdSpirits(l.getValue()));
         
+        breakfast.setId("breakfast");
+        towels.setId("towels");
+        spirits.setId("spirits");
+        
         layout.addComponent(breakfast);
         layout.addComponent(towels);
         layout.addComponent(spirits);
