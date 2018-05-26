@@ -14,12 +14,12 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.hotels.categoryUI.Category;
-import com.hotels.categoryUI.CategoryService;
-import com.hotels.holelsUI.FreeServices;
-import com.hotels.holelsUI.Hotel;
-import com.hotels.holelsUI.HotelFieldNames;
-import com.hotels.holelsUI.PaymentMethod;
+import com.hotels.constants.HotelFieldNames;
+import com.hotels.entities.Category;
+import com.hotels.entities.FreeServices;
+import com.hotels.entities.Hotel;
+import com.hotels.entities.PaymentMethod;
+import com.hotels.services.CategoryService;
 
 public class AddHotels extends AbstractUITest {
     

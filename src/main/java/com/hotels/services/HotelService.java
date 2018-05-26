@@ -1,4 +1,4 @@
-package com.hotels.holelsUI;
+package com.hotels.services;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
@@ -11,8 +11,10 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
-import com.hotels.categoryUI.Category;
-import com.hotels.categoryUI.CategoryService;
+import com.hotels.entities.Category;
+import com.hotels.entities.FreeServices;
+import com.hotels.entities.Hotel;
+import com.hotels.entities.PaymentMethod;
 
 public class HotelService {
 

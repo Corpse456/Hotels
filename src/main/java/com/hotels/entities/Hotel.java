@@ -1,4 +1,4 @@
-package com.hotels.holelsUI;
+package com.hotels.entities;
 
 import java.io.Serializable;
 
@@ -16,8 +16,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
-
-import com.hotels.categoryUI.Category;
 
 @Entity
 @Table(name = "HOTEL")

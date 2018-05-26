@@ -1,4 +1,4 @@
-package com.hotels.holelsUI;
+package com.hotels.entities;
 
 import java.io.Serializable;
 

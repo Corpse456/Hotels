@@ -1,9 +1,12 @@
-package com.hotels.categoryUI;
+package com.hotels.view;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.hotels.entities.Category;
+import com.hotels.services.CategoryService;
+import com.hotels.view.form.CategoryEditForm;
 import com.vaadin.event.selection.MultiSelectionListener;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;

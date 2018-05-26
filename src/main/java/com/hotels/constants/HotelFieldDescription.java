@@ -1,4 +1,4 @@
-package com.hotels.holelsUI;
+package com.hotels.constants;
 
 public class HotelFieldDescription {
     

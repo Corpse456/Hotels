@@ -1,4 +1,4 @@
-package com.hotels.holelsUI;
+package com.hotels.view.form;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -11,8 +11,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.hotels.categoryUI.Category;
-import com.hotels.categoryUI.CategoryService;
+import com.hotels.constants.HotelFieldDescription;
+import com.hotels.constants.HotelFieldNames;
+import com.hotels.entities.Category;
+import com.hotels.entities.Hotel;
+import com.hotels.services.CategoryService;
+import com.hotels.services.HotelService;
+import com.hotels.view.HotelView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;

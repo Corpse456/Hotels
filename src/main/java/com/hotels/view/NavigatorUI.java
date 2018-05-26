@@ -1,4 +1,4 @@
-package com.hotels;
+package com.hotels.view;
 
 import javax.servlet.annotation.WebListener;
 import javax.servlet.annotation.WebServlet;
@@ -6,8 +6,6 @@ import javax.servlet.annotation.WebServlet;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.ContextLoaderListener;
 
-import com.hotels.categoryUI.CategoryView;
-import com.hotels.holelsUI.HotelView;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.icons.VaadinIcons;
@@ -82,6 +80,7 @@ public class NavigatorUI extends UI {
         menu.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
         panel.setSizeFull();
         panel.setStyleName(ValoTheme.PANEL_BORDERLESS);
+        menu.setId("NavigatorMenu");
     }
 
     @WebServlet (urlPatterns = "/*", name = "NavigatorUIServlet", asyncSupported = true)

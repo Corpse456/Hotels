@@ -1,4 +1,4 @@
-package com.hotels.categoryUI;
+package com.hotels.entities;
 
 import java.io.Serializable;
 

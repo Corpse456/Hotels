@@ -1,5 +1,6 @@
-package com.hotels.holelsUI;
+package com.hotels.view.form;
 
+import com.hotels.entities.PaymentMethod;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
 import com.vaadin.ui.Label;

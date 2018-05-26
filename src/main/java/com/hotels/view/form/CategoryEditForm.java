@@ -1,5 +1,8 @@
-package com.hotels.categoryUI;
+package com.hotels.view.form;
 
+import com.hotels.entities.Category;
+import com.hotels.services.CategoryService;
+import com.hotels.view.CategoryView;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.ui.Button;

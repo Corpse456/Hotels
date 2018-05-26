@@ -1,10 +1,15 @@
-package com.hotels.holelsUI;
+package com.hotels.view;
 
 import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.hotels.constants.HotelFieldNames;
+import com.hotels.entities.Hotel;
+import com.hotels.services.HotelService;
+import com.hotels.view.form.HotelEditForm;
+import com.hotels.view.form.HotelPopup;
 import com.vaadin.event.selection.MultiSelectionListener;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;

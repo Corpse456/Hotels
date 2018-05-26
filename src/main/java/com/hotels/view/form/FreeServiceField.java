@@ -1,5 +1,6 @@
-package com.hotels.holelsUI;
+package com.hotels.view.form;
 
+import com.hotels.entities.FreeServices;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;

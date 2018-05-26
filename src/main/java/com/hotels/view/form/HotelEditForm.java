@@ -1,12 +1,18 @@
-package com.hotels.holelsUI;
+package com.hotels.view.form;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.hotels.categoryUI.Category;
-import com.hotels.categoryUI.CategoryService;
+import com.hotels.constants.HotelFieldDescription;
+import com.hotels.constants.HotelFieldNames;
+import com.hotels.entities.Category;
+import com.hotels.entities.Hotel;
+import com.hotels.entities.PaymentMethod;
+import com.hotels.services.CategoryService;
+import com.hotels.services.HotelService;
+import com.hotels.view.HotelView;
 import com.vaadin.data.Binder;
 import com.vaadin.data.Converter;
 import com.vaadin.data.Result;

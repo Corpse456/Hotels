@@ -1,4 +1,4 @@
-package com.hotels.categoryUI;
+package com.hotels.services;
 
 import java.util.List;
 
@@ -7,6 +7,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
+
+import com.hotels.entities.Category;
 
 public class CategoryService {
     private static CategoryService instance;
