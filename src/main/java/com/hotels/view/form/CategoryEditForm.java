@@ -23,7 +23,7 @@ public class CategoryEditForm extends FormLayout {
     private Button close = new Button("Close");
     private HorizontalLayout buttons = new HorizontalLayout();
     private Binder<Category> binder = new Binder<>(Category.class);
-    
+
     public CategoryEditForm (CategoryView ui) {
         this.ui = ui;
         this.setVisible(false);
@@ -59,7 +59,6 @@ public class CategoryEditForm extends FormLayout {
             close();
         } else Notification.show("Unable to save! please review errors and fill name field", Type.ERROR_MESSAGE);
     }
-    
 
     public void setCategory (Category category) {
         this.category = category;

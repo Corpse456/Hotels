@@ -1,6 +1,10 @@
 package com.hotels.view.form;
 
 import com.hotels.entities.PaymentMethod;
+import com.vaadin.data.Binder;
+import com.vaadin.data.ValidationResult;
+import com.vaadin.data.Validator;
+import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
 import com.vaadin.ui.Label;
@@ -23,7 +27,7 @@ public class PaymentMethodField extends CustomField<PaymentMethod> {
     private Label cashLabel = new Label("Payment will be made directly in the hotel");
     private PaymentMethod method;
     private String caption = "Payment method";
-    private Integer oldValue = null;
+    private Binder<PaymentMethod> binder = new Binder<>(PaymentMethod.class);
     
     public PaymentMethodField (String caption) {
         this.caption = caption;
@@ -53,6 +57,7 @@ public class PaymentMethodField extends CustomField<PaymentMethod> {
         
         updateValues();
         
+        binder.bindInstanceFields(this);
         return layout;
     }
 
@@ -90,21 +95,27 @@ public class PaymentMethodField extends CustomField<PaymentMethod> {
         prepayment.setVisible(false);
         //prepayment.setValueChangeMode(ValueChangeMode.LAZY);
         prepayment.addValueChangeListener(l -> {
-            if (l.getValue() == null) return;
-            
-            if (oldValue != null && !l.getValue().isEmpty()) {
-                Notification.show("Value changed: ", "from " + oldValue + " to " + l.getValue(), Type.TRAY_NOTIFICATION);
-            }
-            
-            try {
-                oldValue = new Integer(l.getValue());
-                if (oldValue > 100 || oldValue < 0) throw new NumberFormatException();
-                method.setCard(oldValue);
-            } catch (NumberFormatException e) {
-                prepayment.setValue("");
-                oldValue = null;
+            if (l.getOldValue() != null && l.getValue() != null && !l.getOldValue().isEmpty() && !l.getValue().isEmpty()) {
+                Notification.show("Value changed: ", "from " + l.getOldValue() + " to " + l.getValue(), Type.TRAY_NOTIFICATION);
             }
         });
+        binder.forField(prepayment).withValidator(prepaymentValidator()).withConverter(new StringToIntegerConverter("Wrong Value")).bind(PaymentMethod::getCard, PaymentMethod::setCard);
+    }
+
+    private Validator<? super String> prepaymentValidator () {
+        return (value, context) -> {
+            if (method.isCash()) return ValidationResult.ok();
+
+            int parseInt = -1;
+            try {
+                parseInt = Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+                ValidationResult.error("Not a number");
+            }
+            if (!(parseInt >= 0 && parseInt <= 100)) return ValidationResult.error("value must be beetween 0 and 100 inclusive");
+
+            return ValidationResult.ok();
+        };
     }
 
     private ValueChangeListener<String> changeListener () {
@@ -127,7 +138,7 @@ public class PaymentMethodField extends CustomField<PaymentMethod> {
     
     private void updateValues () {
         if (getValue() != null) {
-            if (method.getCash()) {
+            if (method.isCash()) {
                 radiobutton.setSelectedItem(CASH);
                 cashLabel.setVisible(true);
                 prepayment.setVisible(false);
@@ -138,6 +149,10 @@ public class PaymentMethodField extends CustomField<PaymentMethod> {
                 prepayment.setValue(method.getCard() + "");
             }
         }
+    }
+
+    public Binder<PaymentMethod> getBinder () {
+        return binder;
     }
 
     @Override

@@ -22,7 +22,7 @@ public class PaymentMethod implements Serializable {
         if (value == null) return;
         
         card = value.getCard();
-        cash = value.getCash() != null ? value.getCash() : false;
+        cash = value.isCash() != null ? value.isCash() : false;
     }
 
     public Integer getCard () {
@@ -33,7 +33,7 @@ public class PaymentMethod implements Serializable {
         this.card = card;
     }
 
-    public Boolean getCash () {
+    public Boolean isCash () {
         return cash;
     }
 

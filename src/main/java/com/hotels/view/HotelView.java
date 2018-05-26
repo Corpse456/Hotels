@@ -4,16 +4,21 @@ import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import com.hotels.constants.HotelFieldNames;
 import com.hotels.entities.Hotel;
 import com.hotels.services.HotelService;
 import com.hotels.view.form.HotelEditForm;
 import com.hotels.view.form.HotelPopup;
+import com.vaadin.data.provider.DataProvider;
+import com.vaadin.data.provider.DataProviderListener;
+import com.vaadin.data.provider.Query;
 import com.vaadin.event.selection.MultiSelectionListener;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.shared.Registration;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -197,7 +202,46 @@ public class HotelView extends VerticalLayout implements View {
         status.setValue(notif);
     }
 
+    @SuppressWarnings ("serial")
     public void updateList () {
+        grid.setDataProvider(new DataProvider<Hotel, Void>() {
+
+            @Override
+            public boolean isInMemory () {
+                // TODO Auto-generated method stub
+                return false;
+            }
+
+            @Override
+            public int size (Query<Hotel, Void> query) {
+                // TODO Auto-generated method stub
+                return 0;
+            }
+
+            @Override
+            public Stream<Hotel> fetch (Query<Hotel, Void> query) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public void refreshItem (Hotel item) {
+                // TODO Auto-generated method stub
+                
+            }
+
+            @Override
+            public void refreshAll () {
+                // TODO Auto-generated method stub
+                
+            }
+
+            @Override
+            public Registration addDataProviderListener (DataProviderListener<Hotel> listener) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+        });
         List<Hotel> hotelList = hotelService.findAll(nameFilter.getValue(), addressFilter.getValue());
         grid.setItems(hotelList);
     }

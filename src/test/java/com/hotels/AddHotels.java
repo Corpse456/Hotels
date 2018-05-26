@@ -84,7 +84,7 @@ public class AddHotels extends AbstractUITest {
     private void payment (Hotel current) {
         PaymentMethod payment = current.getPaymentMethod();
       
-        if (!payment.getCash()) {
+        if (!payment.isCash()) {
             driver.findElement(By.xpath("//*[@id=\"HotelRadioButton\"]/span[1]")).click();
             driver.findElement(By.id("HotelPrepayment")).sendKeys(payment.getCard() + "");;
         } 

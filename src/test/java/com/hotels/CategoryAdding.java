@@ -3,8 +3,6 @@ package com.hotels;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class CategoryAdding extends AbstractUITest {
 
@@ -13,11 +11,9 @@ public class CategoryAdding extends AbstractUITest {
         String[] names = {"Villa", "House", "Lux"};
         
         driver.get(BASE_URL);
-        WebDriverWait waitDriver = new WebDriverWait(driver, 30);
-        
-        String categoryButton = ".mytheme .v-menubar .v-menubar-menuitem:last-child";
-        waitDriver.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(categoryButton)));
-        driver.findElement(By.cssSelector(categoryButton)).click();
+        Thread.sleep(4000);
+      
+        driver.findElement(By.cssSelector(".mytheme .v-menubar .v-menubar-menuitem:last-child")).click();
         Thread.sleep(200);
         
         int rows = driver.findElements(By.xpath("//tbody[@class='v-grid-body']/tr[contains(@class, 'v-grid-row')]")).size();

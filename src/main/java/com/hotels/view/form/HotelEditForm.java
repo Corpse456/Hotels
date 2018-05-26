@@ -217,7 +217,7 @@ public class HotelEditForm extends FormLayout {
     }
 
     private void save () {
-        if (binder.isValid()) {
+        if (binder.isValid() && paymentMethod.getBinder().isValid()) {
             try {
                 binder.writeBean(hotel);
             } catch (ValidationException e) {
