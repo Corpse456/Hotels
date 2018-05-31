@@ -186,6 +186,8 @@ public class HotelPopup extends PopupView {
                         hotelFiledChange(currentSelectedField.toLowerCase(), category);
                     }
                 });
+            } else if (HotelFieldNames.Rating.toString().equals(currentSelectedField)) {
+                hotelFiledChange(currentSelectedField.toLowerCase(), Integer.parseInt(fieldValue.getValue()));
             } else {
                 hotelFiledChange(currentSelectedField.toLowerCase(), fieldValue.getValue());
             }

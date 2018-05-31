@@ -77,8 +77,8 @@ public class HotelEditForm extends FormLayout {
         rating.setId(HotelFieldNames.Rating.toString());
         operatesFrom.setId(HotelFieldNames.OperatesFrom.toString());
         category.setId(HotelFieldNames.Category.toString());
-        freeService.setId(HotelFieldNames.FreeServices.toString());
-        paymentMethod.setId(HotelFieldNames.PaymentMethod.toString());
+        freeService.setId("FreeServices");
+        paymentMethod.setId("PaymentMethod");
         description.setId(HotelFieldNames.Description.toString());
         url.setId(HotelFieldNames.URL.toString());
         save.setId("HotelSave");
