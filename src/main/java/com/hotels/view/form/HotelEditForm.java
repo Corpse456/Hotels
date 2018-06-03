@@ -240,4 +240,8 @@ public class HotelEditForm extends FormLayout {
         binder.readBean(this.hotel);
         setVisible(true);
     }
+
+    public Binder<Hotel> getBinder () {
+        return binder;
+    }
 }

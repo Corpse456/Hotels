@@ -201,4 +201,8 @@ public class HotelView extends VerticalLayout implements View {
         List<Hotel> hotelList = hotelService.findAll(nameFilter.getValue(), addressFilter.getValue());
         grid.setItems(hotelList);
     }
+
+    public HotelEditForm getForm () {
+        return form;
+    }
 }
