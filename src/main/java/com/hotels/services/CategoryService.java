@@ -45,7 +45,9 @@ public class CategoryService {
         value = em.find(Category.class, value.getId());
         
         tx.begin();
+        System.out.println("Here");
         em.remove(value);
+        em.flush();
         tx.commit();
     }
 

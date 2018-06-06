@@ -40,4 +40,9 @@ public class PaymentMethod implements Serializable {
     public void setCash (Boolean cash) {
         this.cash = cash;
     }
+
+    @Override
+    public String toString () {
+        return card > 0 ? "card" : "cash";
+    }
 }

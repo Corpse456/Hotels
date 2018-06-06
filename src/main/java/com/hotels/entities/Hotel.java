@@ -43,7 +43,7 @@ public class Hotel implements Serializable, Cloneable {
     private Long operatesFrom;
 
     @JoinColumn (name = "CATEGORY_ID", updatable = true)
-    @ManyToOne (cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @ManyToOne (cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     private Category category;
     
     @Embedded

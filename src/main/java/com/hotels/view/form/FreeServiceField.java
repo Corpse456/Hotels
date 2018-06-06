@@ -71,4 +71,11 @@ public class FreeServiceField extends CustomField<FreeServices> {
         this.value = new FreeServices(value);
         updateValues();
     }
+
+    @Override
+    public String toString () {
+        return "breakfast=" + breakfast + ", towels=" + towels + ", spirits=" + spirits;
+    }
+    
+    
 }

@@ -18,13 +18,11 @@ import com.hotels.entities.Hotel;
 import com.hotels.services.CategoryService;
 import com.hotels.services.HotelService;
 import com.hotels.view.HotelView;
-import com.vaadin.data.Binder;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -44,7 +42,7 @@ public class HotelPopup extends PopupView {
     private final Button update = new Button("Update");
     private final Button cancel = new Button("Cancel");
 
-    private Binder<Hotel> binder;
+    //private Binder<Hotel> binder;
     private String currentSelectedField;
     private CategoryService categoryService = CategoryService.getInstance();
     private HotelService hotelService = HotelService.getInstance();
@@ -67,7 +65,7 @@ public class HotelPopup extends PopupView {
         cancelSetup();
         update.setEnabled(false);
         buttons.addComponents(update, cancel);
-        binder = ui.getForm().getBinder();
+        //binder = ui.getForm().getBinder();
 
         popupContent.addComponents(title, selection, fields, buttons);
 
@@ -119,7 +117,7 @@ public class HotelPopup extends PopupView {
             }
         }
 
-        /*if (HotelFieldNames.Rating.toString().equals(currentSelectedField)) {
+        if (HotelFieldNames.Rating.toString().equals(currentSelectedField)) {
             int parseInt = -1;
             try {
                 parseInt = Integer.parseInt(value);
@@ -129,7 +127,7 @@ public class HotelPopup extends PopupView {
                 update.setEnabled(false);
                 return;
             }
-        }*/
+        }
         update.setEnabled(true);
     }
 
@@ -180,10 +178,11 @@ public class HotelPopup extends PopupView {
 
     private void updateSetup () {
         update.addClickListener(click -> {   
-            if (!binder.isValid()) {
+            /*if (!binder.isValid()) {
+                binder.getFields().forEach(a -> System.err.println(a.getValue()));
                 Notification.show("Wrong");
                 return;
-            }
+            }*/
             
             if (HotelFieldNames.OperatesFrom.toString().equals(currentSelectedField)) {
                 hotelFiledChange("operatesFrom", operatesFrom.getValue().getLong(ChronoField.EPOCH_DAY));

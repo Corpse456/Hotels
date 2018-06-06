@@ -160,4 +160,11 @@ public class PaymentMethodField extends CustomField<PaymentMethod> {
         method = new PaymentMethod(value);
         updateValues();
     }
+
+    @Override
+    public String toString () {
+        return method.toString();
+    }
+    
+    
 }
