@@ -178,6 +178,9 @@ public class HotelPopup extends PopupView {
 
     private void updateSetup () {
         update.addClickListener(click -> {   
+            cltkfnm dataprovider
+            b binder
+            input.setComponentError(new UserError("This field is never satisfied."));
             /*if (!binder.isValid()) {
                 binder.getFields().forEach(a -> System.err.println(a.getValue()));
                 Notification.show("Wrong");
