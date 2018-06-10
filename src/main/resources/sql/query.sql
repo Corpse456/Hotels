@@ -1,4 +1,4 @@
-mysql -h localhost -u demo -p D1e2m3o4O1E3AE!3
+mysql -h localhost -p"D1e2m3o4O1E3AE!3" -udemo
 use demo_hotels;
 show tables;
 desc HOTEL;
